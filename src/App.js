@@ -1,32 +1,39 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
-import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
-
 import Navbar from './components/Navbar';
 import Home from './components/Home';
+
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
+import themeFile from './util/theme';
+
+import axios from 'axios';
+
+const theme = createMuiTheme(themeFile);
+
+axios.defaults.baseURL =
+  'https://us-central1-kanata-production.cloudfunctions.net/api';
 
 class App extends Component {
   render() {
     return (
-      <Grid container>
-        <Hidden only={['xs', 'sm']}>
-          <Grid item lg={2} md={3} xs={12}>
-            <Navbar fullHeight={true} />
-          </Grid>
-          <Grid item lg={10} md={9} xs={12}>
-            <Home /> {'dddddddddddd'}
-          </Grid>
-        </Hidden>
-        <Hidden only={['xl', 'lg', 'md']}>
-          <Grid item lg={2} md={3} xs={12}>
-            <Navbar fullHeight={false} />
-          </Grid>
-          <Grid item lg={10} md={9} xs={12}>
-            <Home /> {'fffffffffff'}
-          </Grid>
-        </Hidden>
-      </Grid>
+      <MuiThemeProvider theme={theme}>
+        <Router>
+          <div className='container'>
+            <Switch>
+              <Route exact path='/' component={Home} />
+              {/* <Route exact path='/login' component={login} />
+              <Route exact path='/signup' component={signup} />
+              <Route
+                exact
+                path='/users/:handle/scream/:screamId'
+                component={user}
+              /> */}
+            </Switch>
+          </div>
+        </Router>
+      </MuiThemeProvider>
     );
   }
 }
