@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
-import Grid from '@material-ui/core/Grid';
-import Navbar from './Navbar';
 
 class Home extends Component {
   componentDidMount() {
@@ -33,11 +31,8 @@ class Home extends Component {
     ));
     return (
       <Fragment>
-        <Grid container>
-          <Navbar />
-          {videosMarkup}
-          {'fffffffffff'}
-        </Grid>
+        {videosMarkup}
+        {'HOME'}
       </Fragment>
     );
   }
