@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import ListItemText from '@material-ui/core/ListItemText';
-
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -77,17 +76,16 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px',
     margin: 'auto 5%',
     width: 60,
-    justifyContent: 'center',
   },
   logoSmUp: {
-    margin: '0',
-    padding: '30%',
-    paddingTop: 80,
-    width: '100%',
+    objectFit: 'contain',
+    paddingBottom: 50,
+    paddingTop: 75,
     backgroundColor: 'black',
   },
   companyName: {
-    fontSize: 20,
+    fontSize: 24,
+    padding: '10px',
     textAlign: 'center',
     backgroundColor: 'black',
     color: 'white',
@@ -178,14 +176,6 @@ function App(props) {
     </div>
   );
 
-  const drawerLogo = (
-    <div>
-      <img src={logo} alt='logo' className={classes.logoSmUp} />
-      <div className={classes.companyName}>Motion Graphic Studio</div>
-      <div className={classes.companyName}>Toronto / Canada</div>
-    </div>
-  );
-
   return (
     <MuiThemeProvider theme={themes}>
       <Router>
@@ -223,7 +213,9 @@ function App(props) {
                 ModalProps={{
                   keepMounted: true, // Better open performance on mobile.
                 }}>
-                {drawerLogo}
+                <img src={logo} alt='logo' className={classes.logoSmUp} />
+                <div className={classes.companyName}>Motion Graphic Studio</div>
+                <div className={classes.companyName}>Toronto / Canada</div>
                 {drawer}
               </Drawer>
             </Hidden>
@@ -235,7 +227,9 @@ function App(props) {
                 }}
                 variant='permanent'
                 open>
-                {drawerLogo}
+                <img src={logo} alt='logo' className={classes.logoSmUp} />
+                <div className={classes.companyName}>Motion Graphic Studio</div>
+                <div className={classes.companyName}>Toronto / Canada</div>
                 {drawer}
               </Drawer>
             </Hidden>
