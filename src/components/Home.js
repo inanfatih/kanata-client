@@ -32,7 +32,7 @@ class Home extends Component {
     return (
       <Fragment>
         {videosMarkup}
-        {'HOME'}
+        {'HOME COMPONENT'}
       </Fragment>
     );
   }

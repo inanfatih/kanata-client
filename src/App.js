@@ -5,17 +5,24 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import VideocamIcon from '@material-ui/icons/Videocam';
 import ListItemText from '@material-ui/core/ListItemText';
+
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
+import Collapse from '@material-ui/core/Collapse';
+import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
+import Work from '@material-ui/icons/Work';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Home from './components/Home';
@@ -32,6 +39,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    backgroundColor: '#DE2548',
+    color: '#fff',
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
@@ -59,9 +68,38 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    minHeight: '100vh',
   },
   icons: {
     color: '#fff',
+  },
+  logoXs: {
+    padding: '10px',
+    margin: 'auto 5%',
+    width: 60,
+    justifyContent: 'center',
+  },
+  logoSmUp: {
+    margin: '0',
+    padding: '30%',
+    paddingTop: 80,
+    width: '100%',
+    backgroundColor: 'black',
+  },
+  companyName: {
+    fontSize: 20,
+    textAlign: 'center',
+    backgroundColor: 'black',
+    color: 'white',
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
+  socialMediaIcons: {
+    margin: '10%',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexWrap: 'nowrap',
   },
 }));
 
@@ -79,41 +117,72 @@ function App(props) {
     setMobileOpen(!mobileOpen);
   };
 
+  const [open, setOpen] = React.useState(true);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   const drawer = (
-    <div style={{ backgroundColor: 'black', color: 'white' }}>
+    <div style={{ backgroundColor: 'black', color: 'white', height: '100vh' }}>
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon className={classes.icons}>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem button key='Works' onClick={handleClick}>
+          <ListItemIcon className={classes.icons}>
+            <Work />
+          </ListItemIcon>
+          <ListItemText primary='Works' />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={open} timeout='auto' unmountOnExit>
+          <List component='div' disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon className={classes.icons}>
+                <VideocamIcon />
+              </ListItemIcon>
+              <ListItemText primary='2D & 3D' />
+            </ListItem>
+          </List>
+          <List component='div' disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon className={classes.icons}>
+                <VideoLibraryIcon />
+              </ListItemIcon>
+              <ListItemText primary='Videos' />
+            </ListItem>
+          </List>
+          <List component='div' disablePadding>
+            <ListItem button className={classes.nested}>
+              <ListItemIcon className={classes.icons}>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText primary='Social Media' />
+            </ListItem>
+          </List>
+        </Collapse>
+        <ListItem button key='Contact'>
+          <ListItemIcon className={classes.icons}>
+            <MailIcon />
+          </ListItemIcon>
+          <ListItemText primary='Contact' />
+        </ListItem>
       </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
+      <br />
+
+      <div className={classes.socialMediaIcons}>
+        <i className='fab fa-vimeo-square fa-2x'></i>
+        <i className='fab fa-behance-square fa-2x'></i>
+        <i className='fab fa-facebook-square fa-2x'></i>
+      </div>
     </div>
   );
 
-  const companyNameLogoMarkup = (
+  const drawerLogo = (
     <div>
-      <img src={logo} alt='logo' />
-      <br />
-      <br />
-      <Typography variant='h5'>Motion Graphic Studio</Typography>
-      <Typography variant='h5'>Toronto / Canada</Typography>
+      <img src={logo} alt='logo' className={classes.logoSmUp} />
+      <div className={classes.companyName}>Motion Graphic Studio</div>
+      <div className={classes.companyName}>Toronto / Canada</div>
     </div>
   );
 
@@ -122,22 +191,23 @@ function App(props) {
       <Router>
         <div className={classes.root}>
           <CssBaseline />
-          <AppBar position='fixed' className={classes.appBar}>
-            <Toolbar>
-              <IconButton
-                color='inherit'
-                aria-label='open drawer'
-                edge='start'
-                onClick={handleDrawerToggle}
-                className={classes.menuButton}>
-                <MenuIcon />
-              </IconButton>
-              <Typography variant='h6' noWrap>
-                {companyNameLogoMarkup}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <nav className={classes.drawer} aria-label='mailbox folders'>
+          <Hidden smUp implementation='css'>
+            <AppBar position='fixed' className={classes.appBar}>
+              <Toolbar>
+                <IconButton
+                  color='inherit'
+                  aria-label='open drawer'
+                  edge='start'
+                  onClick={handleDrawerToggle}
+                  className={classes.menuButton}>
+                  <MenuIcon />
+                </IconButton>
+                <img src={logo} alt='logo' className={classes.logoXs} />
+                <div className={classes.companyName}>Motion Graphic Studio</div>
+              </Toolbar>
+            </AppBar>
+          </Hidden>
+          <nav className={classes.drawer}>
             {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
             <Hidden smUp implementation='css'>
               {/* Drawer in MOBILE */}
@@ -153,76 +223,31 @@ function App(props) {
                 ModalProps={{
                   keepMounted: true, // Better open performance on mobile.
                 }}>
+                {drawerLogo}
                 {drawer}
               </Drawer>
             </Hidden>
             <Hidden xsDown implementation='css'>
               {/* Drawer in DESKTOP */}
-
               <Drawer
                 classes={{
                   paper: classes.drawerPaper,
                 }}
                 variant='permanent'
                 open>
-                {companyNameLogoMarkup}
-
+                {drawerLogo}
                 {drawer}
               </Drawer>
             </Hidden>
           </nav>
           <main className={classes.content}>
-            <div className={classes.toolbar} />
-            {'appjs'}
+            <Hidden smUp>
+              <div className={classes.toolbar} />
+            </Hidden>
+
             <Switch>
               <Route exact path='/' component={Home} />
             </Switch>
-            <Typography paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Rhoncus dolor purus non enim praesent elementum facilisis leo vel.
-              Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-              gravida rutrum quisque non tellus. Convallis convallis tellus id
-              interdum velit laoreet id donec ultrices. Odio morbi quis commodo
-              odio aenean sed adipiscing. Amet nisl suscipit adipiscing bibendum
-              est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-              Metus vulputate eu scelerisque felis imperdiet proin fermentum
-              leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt
-              lobortis feugiat vivamus at augue. At augue eget arcu dictum
-              varius duis at consectetur lorem. Velit sed ullamcorper morbi
-              tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-            </Typography>
-            <Typography paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Rhoncus dolor purus non enim praesent elementum facilisis leo vel.
-              Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-              gravida rutrum quisque non tellus. Convallis convallis tellus id
-              interdum velit laoreet id donec ultrices. Odio morbi quis commodo
-              odio aenean sed adipiscing. Amet nisl suscipit adipiscing bibendum
-              est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-              Metus vulputate eu scelerisque felis imperdiet proin fermentum
-              leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt
-              lobortis feugiat vivamus at augue. At augue eget arcu dictum
-              varius duis at consectetur lorem. Velit sed ullamcorper morbi
-              tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-            </Typography>
-
-            <Typography paragraph>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              Rhoncus dolor purus non enim praesent elementum facilisis leo vel.
-              Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-              gravida rutrum quisque non tellus. Convallis convallis tellus id
-              interdum velit laoreet id donec ultrices. Odio morbi quis commodo
-              odio aenean sed adipiscing. Amet nisl suscipit adipiscing bibendum
-              est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-              Metus vulputate eu scelerisque felis imperdiet proin fermentum
-              leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt
-              lobortis feugiat vivamus at augue. At augue eget arcu dictum
-              varius duis at consectetur lorem. Velit sed ullamcorper morbi
-              tincidunt. Lorem donec massa sapien faucibus et molestie ac.
-            </Typography>
 
             <Typography paragraph>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
