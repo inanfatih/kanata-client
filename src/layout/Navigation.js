@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import '../App.css';
 import logo from '../images/kpLogo.png';
@@ -22,10 +23,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Collapse from '@material-ui/core/Collapse';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
-import Work from '@material-ui/icons/Work';
+import WorkIcon from '@material-ui/icons/Work';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
+import Contact from '../pages/Contact';
+import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(makeStylesTheme);
 
@@ -48,52 +52,64 @@ function Navigation(props) {
   const drawer = (
     <div style={{ backgroundColor: 'black', color: 'white', height: '100vh' }}>
       <div className={classes.toolbar} />
-      <Divider />
       <List>
         <ListItem button key='Works' onClick={handleClick}>
           <ListItemIcon className={classes.icons}>
-            <Work />
+            <WorkIcon />
           </ListItemIcon>
           <ListItemText primary='Works' />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={open} timeout='auto' unmountOnExit>
           <List component='div' disablePadding>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon className={classes.icons}>
-                <VideocamIcon />
-              </ListItemIcon>
-              <ListItemText primary='2D & 3D' />
-            </ListItem>
+            <Link to='/2d3d'>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.icons}>
+                  <VideocamIcon />
+                </ListItemIcon>
+                <ListItemText primary='2D & 3D' />
+              </ListItem>
+            </Link>
           </List>
           <List component='div' disablePadding>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon className={classes.icons}>
-                <VideoLibraryIcon />
-              </ListItemIcon>
-              <ListItemText primary='Videos' />
-            </ListItem>
+            <Link to='/videos'>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.icons}>
+                  <VideoLibraryIcon />
+                </ListItemIcon>
+                <ListItemText primary='Videos' />
+              </ListItem>
+            </Link>
           </List>
           <List component='div' disablePadding>
-            <ListItem button className={classes.nested}>
-              <ListItemIcon className={classes.icons}>
-                <StarBorder />
-              </ListItemIcon>
-              <ListItemText primary='Social Media' />
-            </ListItem>
+            <Link to='/socialmedia'>
+              <ListItem button className={classes.nested}>
+                <ListItemIcon className={classes.icons}>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary='Social Media' />
+              </ListItem>
+            </Link>
           </List>
         </Collapse>
-        <ListItem button key='Contact'>
-          <ListItemIcon className={classes.icons}>
-            <MailIcon />
-          </ListItemIcon>
-          <ListItemText primary='Contact' />
-        </ListItem>
+        <Link to='/contact'>
+          <ListItem button key='Contact'>
+            <ListItemIcon className={classes.icons}>
+              <MailIcon />
+            </ListItemIcon>
+            <ListItemText primary='Contact' />
+          </ListItem>
+        </Link>
       </List>
       <br />
 
       <div className={classes.socialMediaIcons}>
-        <i className='fab fa-vimeo-square fa-2x'></i>
+        <a
+          href='http://www.facebook.com'
+          target='_blank'
+          rel='noopener noreferrer'>
+          <i className='fab fa-vimeo-square fa-2x'></i>
+        </a>
         <i className='fab fa-behance-square fa-2x'></i>
         <i className='fab fa-facebook-square fa-2x'></i>
       </div>

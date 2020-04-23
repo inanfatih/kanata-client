@@ -39,9 +39,7 @@ class Home extends Component {
           <br />
         </Hidden>
         {videosMarkup}
-        {
-          'HOMECOMPONENTMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
-        }
+        {'HOMECOMPONENTMMMMM'}
       </Fragment>
     );
   }

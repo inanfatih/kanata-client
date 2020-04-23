@@ -50,13 +50,14 @@ export const makeStylesTheme = (theme) => ({
     minHeight: '100vh',
     backgroundColor: '#DE2548',
     color: '#fff',
+    fontSize: 24,
   },
   icons: {
     color: '#fff',
   },
   logoXs: {
     padding: '10px',
-    margin: 'auto 5%',
+    margin: 'auto 2%',
     width: 60,
   },
   logoSmUp: {
@@ -76,9 +77,9 @@ export const makeStylesTheme = (theme) => ({
     paddingLeft: theme.spacing(4),
   },
   socialMediaIcons: {
-    margin: '10%',
     display: 'flex',
     justifyContent: 'space-evenly',
     flexWrap: 'nowrap',
+    marginTop: '10%',
   },
 });
