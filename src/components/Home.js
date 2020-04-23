@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 
+import Hidden from '@material-ui/core/Hidden';
+
 class Home extends Component {
   componentDidMount() {
     this.getVideos();
@@ -31,34 +33,18 @@ class Home extends Component {
     ));
     return (
       <Fragment>
+        <Hidden smUp implementation='css'>
+          <br />
+          <br />
+          <br />
+        </Hidden>
         {videosMarkup}
-        {'HOME COMPONENT'}
+        {
+          'HOMECOMPONENTMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM'
+        }
       </Fragment>
     );
   }
 }
 
-/*
-componentDidMount() {
-    this.props.getScreams();
-  }
-  render() {
-
-    let recentScreamsMarkup = !loading ? (
-      screams.map((scream) => <Scream key={scream.screamId} scream={scream} />)
-    ) : (
-      <ScreamSkeleton />
-    );
-    return (
-      <Grid container spacing={4}>
-        <Grid item sm={8} xs={12}>
-          {recentScreamsMarkup}
-        </Grid>
-        <Grid item sm={4} xs={12}>
-          <Profile></Profile>
-        </Grid>
-      </Grid>
-    );
-  }
-*/
 export default Home;
