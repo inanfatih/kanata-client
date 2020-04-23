@@ -8,7 +8,6 @@ import { makeStylesTheme } from '../util/theme';
 //MUI
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,9 +26,6 @@ import WorkIcon from '@material-ui/icons/Work';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
-import Contact from '../pages/Contact';
-import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(makeStylesTheme);
 
@@ -105,13 +101,23 @@ function Navigation(props) {
 
       <div className={classes.socialMediaIcons}>
         <a
-          href='http://www.facebook.com'
+          href='https://www.vimeo.com'
           target='_blank'
           rel='noopener noreferrer'>
           <i className='fab fa-vimeo-square fa-2x'></i>
         </a>
-        <i className='fab fa-behance-square fa-2x'></i>
-        <i className='fab fa-facebook-square fa-2x'></i>
+        <a
+          href='https://www.behance.com'
+          target='_blank'
+          rel='noopener noreferrer'>
+          <i className='fab fa-behance-square fa-2x'></i>
+        </a>
+        <a
+          href='https://www.facebook.com'
+          target='_blank'
+          rel='noopener noreferrer'>
+          <i className='fab fa-facebook-square fa-2x'></i>
+        </a>
       </div>
     </div>
   );
@@ -130,13 +136,16 @@ function Navigation(props) {
               className={classes.menuButton}>
               <MenuIcon />
             </IconButton>
-            <img src={logo} alt='logo' className={classes.logoXs} />
-            <div className={classes.companyName}>Motion Graphic Studio</div>
+            <Link to='/'>
+              <img src={logo} alt='logo' className={classes.logoXs} />
+            </Link>
+            <Link to='/'>
+              <div className={classes.companyName}>Motion Graphic Studio</div>
+            </Link>
           </Toolbar>
         </AppBar>
       </Hidden>
       <nav className={classes.drawer}>
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation='css'>
           {/* Drawer in MOBILE */}
           <Drawer
@@ -152,8 +161,10 @@ function Navigation(props) {
               keepMounted: true, // Better open performance on mobile.
             }}>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
-            <div className={classes.companyName}>Motion Graphic Studio</div>
-            <div className={classes.companyName}>Toronto / Canada</div>
+            <Link to='/'>
+              <div className={classes.companyName}>Motion Graphic Studio</div>
+              <div className={classes.companyName}>Toronto / Canada</div>
+            </Link>
             {drawer}
           </Drawer>
         </Hidden>
@@ -166,8 +177,10 @@ function Navigation(props) {
             variant='permanent'
             open>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
-            <div className={classes.companyName}>Motion Graphic Studio</div>
-            <div className={classes.companyName}>Toronto / Canada</div>
+            <Link to='/'>
+              <div className={classes.companyName}>Motion Graphic Studio</div>
+              <div className={classes.companyName}>Toronto / Canada</div>
+            </Link>
             {drawer}
           </Drawer>
         </Hidden>

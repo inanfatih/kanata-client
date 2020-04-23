@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
+import axios from 'axios';
+//MUI
 import { makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
-import axios from 'axios';
-
+//Pages
 import Navigation from './layout/Navigation';
 import { themeJs, makeStylesTheme } from './util/theme';
 import './App.css';

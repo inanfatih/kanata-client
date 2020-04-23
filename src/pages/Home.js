@@ -23,10 +23,6 @@ class Home extends Component {
       });
   };
 
-  style = {
-    color: 'blue',
-  };
-
   render() {
     let videosMarkup = this.videos.map((video) => (
       <img src={video.image} alt='for video' />
