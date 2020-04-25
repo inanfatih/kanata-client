@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import '../App.css';
 import logo from '../images/kpLogo.png';
-import { makeStylesTheme } from '../util/theme';
+import { makeStylesTheme, themeJs } from '../util/theme';
 
 //MUI
 import AppBar from '@material-ui/core/AppBar';
@@ -26,6 +26,8 @@ import WorkIcon from '@material-ui/icons/Work';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
+import HomeIcon from '@material-ui/icons/Home';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(makeStylesTheme);
 
@@ -47,8 +49,15 @@ function Navigation(props) {
 
   const drawer = (
     <div style={{ backgroundColor: 'black', color: 'white', height: '100vh' }}>
-      <div className={classes.toolbar} />
-      <List>
+      <List className={classes.toolbarText}>
+        <Link to='/'>
+          <ListItem button key='Home'>
+            <ListItemIcon className={classes.icons}>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary='Home' />
+          </ListItem>
+        </Link>
         <ListItem button key='Works' onClick={handleClick}>
           <ListItemIcon className={classes.icons}>
             <WorkIcon />
@@ -162,8 +171,11 @@ function Navigation(props) {
             }}>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
             <Link to='/'>
-              <div className={classes.companyName}>Motion Graphic Studio</div>
-              <div className={classes.companyName}>Toronto / Canada</div>
+              <Typography
+                className={classes.companyName}
+                variant='companyNameText'>
+                Motion Graphic Studio
+              </Typography>
             </Link>
             {drawer}
           </Drawer>
@@ -177,9 +189,10 @@ function Navigation(props) {
             variant='permanent'
             open>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
-            <Link to='/'>
-              <div className={classes.companyName}>Motion Graphic Studio</div>
-              <div className={classes.companyName}>Toronto / Canada</div>
+            <Link to='/' className={classes.companyName}>
+              <Typography variant={themeJs.typography.companyNameText}>
+                Motion Graphic Studio
+              </Typography>
             </Link>
             {drawer}
           </Drawer>

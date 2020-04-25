@@ -15,6 +15,19 @@ export const themeJs = {
       contrastText: '#fff',
     },
   },
+  typography: {
+    fontFamily: ['Oswald', 'sans-serif'].join(','),
+    companyNameText: {
+      fontFamily: ['Oswald', 'sans-serif'].join(','),
+      fontWeight: 700,
+      fontSize: 36,
+      padding: '10px',
+      paddingBottom: '40px',
+      textAlign: 'center',
+      backgroundColor: 'black',
+      color: 'white',
+    },
+  },
 };
 
 export const makeStylesTheme = (theme) => ({
@@ -39,8 +52,7 @@ export const makeStylesTheme = (theme) => ({
       display: 'none',
     },
   },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
+
   drawerPaper: {
     width: drawerWidth,
   },
@@ -66,13 +78,6 @@ export const makeStylesTheme = (theme) => ({
     paddingTop: 75,
     backgroundColor: 'black',
   },
-  companyName: {
-    fontSize: 24,
-    padding: '10px',
-    textAlign: 'center',
-    backgroundColor: 'black',
-    color: 'white',
-  },
   nested: {
     paddingLeft: theme.spacing(4),
   },
@@ -81,5 +86,18 @@ export const makeStylesTheme = (theme) => ({
     justifyContent: 'space-evenly',
     flexWrap: 'nowrap',
     marginTop: '10%',
+  },
+  navigationText: {
+    fontFamily: ['Oswald', 'sans-serif'].join(','),
+    fontWeight: 700,
+    fontSize: 36,
+  },
+  companyName: {
+    padding: '10px',
+    paddingBottom: '40px',
+    textAlign: 'center',
+    backgroundColor: 'black',
+    color: 'white',
+    fontSize: 36,
   },
 });

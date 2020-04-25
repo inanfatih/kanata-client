@@ -4,19 +4,20 @@ import axios from 'axios';
 import Hidden from '@material-ui/core/Hidden';
 
 class Home extends Component {
-  componentDidMount() {
-    this.getVideos();
+  
+  componentWillMount() {
+    this.getContents();
   }
 
-  videos = [];
+  contents = [];
 
-  getVideos = () => {
+  getContents = () => {
     axios
-      .get('/videos')
+      .get('/content')
       .then((res) => {
         console.log(res);
         console.log(res.data);
-        this.videos = res.data;
+        this.contents = res.data;
       })
       .catch((err) => {
         console.log(err);
@@ -24,8 +25,8 @@ class Home extends Component {
   };
 
   render() {
-    let videosMarkup = this.videos.map((video) => (
-      <img src={video.image} alt='for video' />
+    let contentMarkup = this.contents.map((content) => (
+      <img src={content.image} alt='content was here' />
     ));
     return (
       <Fragment>
@@ -34,7 +35,7 @@ class Home extends Component {
           <br />
           <br />
         </Hidden>
-        {videosMarkup}
+        {contentMarkup}
         {'HOMECOMPONENTMMMMM'}
       </Fragment>
     );
