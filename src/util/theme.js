@@ -1,6 +1,9 @@
-const drawerWidth = 240;
+import { createMuiTheme } from '@material-ui/core/styles';
 
-export const themeJs = {
+const drawerWidth = 240;
+const appBarHeight = 70;
+
+export const theme = createMuiTheme({
   palette: {
     primary: {
       light: '#33c9dc',
@@ -14,25 +17,17 @@ export const themeJs = {
       dark: '#b22a00',
       contrastText: '#fff',
     },
+    background: '#DE2548',
   },
   typography: {
-    fontFamily: ['Oswald', 'sans-serif'].join(','),
-    companyNameText: {
-      fontFamily: ['Oswald', 'sans-serif'].join(','),
-      fontWeight: 700,
-      fontSize: 36,
-      padding: '10px',
-      paddingBottom: '40px',
-      textAlign: 'center',
-      backgroundColor: 'black',
-      color: 'white',
-    },
+    fontFamily: "['Oswald', 'sans-serif'].join(',')",
   },
-};
+});
 
-export const makeStylesTheme = (theme) => ({
+export const styles = (theme) => ({
   root: {
     display: 'flex',
+    background: '#DE2548',
   },
   drawer: {
     [theme.breakpoints.up('sm')]: {
@@ -45,6 +40,9 @@ export const makeStylesTheme = (theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
+    [theme.breakpoints.down('xs')]: {
+      height: appBarHeight,
+    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -52,17 +50,23 @@ export const makeStylesTheme = (theme) => ({
       display: 'none',
     },
   },
-
   drawerPaper: {
     width: drawerWidth,
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(0),
     minHeight: '100vh',
     backgroundColor: '#DE2548',
     color: '#fff',
-    fontSize: 24,
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: `calc(100% - ${appBarHeight}px)`,
+      marginTop: appBarHeight,
+    },
+    background: '#DE2548',
   },
   icons: {
     color: '#fff',
@@ -87,12 +91,14 @@ export const makeStylesTheme = (theme) => ({
     flexWrap: 'nowrap',
     marginTop: '10%',
   },
-  navigationText: {
-    fontFamily: ['Oswald', 'sans-serif'].join(','),
-    fontWeight: 700,
-    fontSize: 36,
+  companyNameXs: {
+    padding: '10px',
+    textAlign: 'center',
+    backgroundColor: 'black',
+    color: 'white',
+    fontSize: 24,
   },
-  companyName: {
+  companyNameOnDrawer: {
     padding: '10px',
     paddingBottom: '40px',
     textAlign: 'center',

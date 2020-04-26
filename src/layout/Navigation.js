@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import '../App.css';
 import logo from '../images/kpLogo.png';
-import { makeStylesTheme, themeJs } from '../util/theme';
+import { styles } from '../util/theme';
 
 //MUI
 import AppBar from '@material-ui/core/AppBar';
@@ -29,7 +29,7 @@ import StarBorder from '@material-ui/icons/StarBorder';
 import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(makeStylesTheme);
+const useStyles = makeStyles(styles);
 
 function Navigation(props) {
   const { container } = props;
@@ -48,8 +48,15 @@ function Navigation(props) {
   };
 
   const drawer = (
-    <div style={{ backgroundColor: 'black', color: 'white', height: '100vh' }}>
-      <List className={classes.toolbarText}>
+    <div
+      style={{
+        backgroundColor: 'black',
+        color: 'white',
+        // height: '100vh',
+        position: 'relative',
+        float: 'left',
+      }}>
+      <List>
         <Link to='/'>
           <ListItem button key='Home'>
             <ListItemIcon className={classes.icons}>
@@ -149,7 +156,9 @@ function Navigation(props) {
               <img src={logo} alt='logo' className={classes.logoXs} />
             </Link>
             <Link to='/'>
-              <div className={classes.companyName}>Motion Graphic Studio</div>
+              <Typography className={classes.companyNameXs}>
+                Motion Graphic Studio
+              </Typography>
             </Link>
           </Toolbar>
         </AppBar>
@@ -171,9 +180,7 @@ function Navigation(props) {
             }}>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
             <Link to='/'>
-              <Typography
-                className={classes.companyName}
-                variant='companyNameText'>
+              <Typography className={classes.companyNameOnDrawer}>
                 Motion Graphic Studio
               </Typography>
             </Link>
@@ -189,8 +196,8 @@ function Navigation(props) {
             variant='permanent'
             open>
             <img src={logo} alt='logo' className={classes.logoSmUp} />
-            <Link to='/' className={classes.companyName}>
-              <Typography variant={themeJs.typography.companyNameText}>
+            <Link to='/'>
+              <Typography className={classes.companyNameOnDrawer}>
                 Motion Graphic Studio
               </Typography>
             </Link>
