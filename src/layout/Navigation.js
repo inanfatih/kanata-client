@@ -7,7 +7,6 @@ import { styles } from '../util/theme';
 
 //MUI
 import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -52,7 +51,7 @@ function Navigation(props) {
       style={{
         backgroundColor: 'black',
         color: 'white',
-        // height: '100vh',
+        height: '100vh',
         position: 'relative',
         float: 'left',
       }}>
@@ -140,7 +139,6 @@ function Navigation(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <Hidden smUp implementation='css'>
         <AppBar position='fixed' className={classes.appBar}>
           <Toolbar>

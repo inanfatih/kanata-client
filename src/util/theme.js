@@ -26,7 +26,6 @@ export const theme = createMuiTheme({
 
 export const styles = (theme) => ({
   root: {
-    display: 'flex',
     background: '#DE2548',
   },
   drawer: {
@@ -54,7 +53,6 @@ export const styles = (theme) => ({
     width: drawerWidth,
   },
   content: {
-    flexGrow: 1,
     minHeight: '100vh',
     backgroundColor: '#DE2548',
     color: '#fff',
@@ -63,7 +61,7 @@ export const styles = (theme) => ({
       marginLeft: drawerWidth,
     },
     [theme.breakpoints.down('xs')]: {
-      width: `calc(100% - ${appBarHeight}px)`,
+      height: `calc(100% - ${appBarHeight}px)`,
       marginTop: appBarHeight,
     },
     background: '#DE2548',
