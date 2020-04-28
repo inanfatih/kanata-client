@@ -61,14 +61,15 @@ function Navigation(props) {
             <ListItemIcon className={classes.icons}>
               <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary='Home' />
+            <Typography className={classes.listItemText}>Home</Typography>
           </ListItem>
         </Link>
         <ListItem button key='Works' onClick={handleClick}>
           <ListItemIcon className={classes.icons}>
             <WorkIcon />
           </ListItemIcon>
-          <ListItemText primary='Works' />
+          <Typography className={classes.listItemText}>Works</Typography>
+          <ListItemText />
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={open} timeout='auto' unmountOnExit>
@@ -78,7 +79,9 @@ function Navigation(props) {
                 <ListItemIcon className={classes.icons}>
                   <VideocamIcon />
                 </ListItemIcon>
-                <ListItemText primary='2D & 3D' />
+                <Typography className={classes.listItemText}>
+                  2D & 3D
+                </Typography>
               </ListItem>
             </Link>
           </List>
@@ -88,7 +91,7 @@ function Navigation(props) {
                 <ListItemIcon className={classes.icons}>
                   <VideoLibraryIcon />
                 </ListItemIcon>
-                <ListItemText primary='Videos' />
+                <Typography className={classes.listItemText}>Videos</Typography>
               </ListItem>
             </Link>
           </List>
@@ -98,7 +101,9 @@ function Navigation(props) {
                 <ListItemIcon className={classes.icons}>
                   <StarBorder />
                 </ListItemIcon>
-                <ListItemText primary='Social Media' />
+                <Typography className={classes.listItemText}>
+                  Social Media
+                </Typography>
               </ListItem>
             </Link>
           </List>
@@ -108,7 +113,7 @@ function Navigation(props) {
             <ListItemIcon className={classes.icons}>
               <MailIcon />
             </ListItemIcon>
-            <ListItemText primary='Contact' />
+            <Typography className={classes.listItemText}>Contact</Typography>
           </ListItem>
         </Link>
       </List>
@@ -155,7 +160,7 @@ function Navigation(props) {
             </Link>
             <Link to='/'>
               <Typography className={classes.companyNameXs}>
-                Motion Graphic Studio
+                Kanata Production
               </Typography>
             </Link>
           </Toolbar>
@@ -179,7 +184,7 @@ function Navigation(props) {
             <img src={logo} alt='logo' className={classes.logoSmUp} />
             <Link to='/'>
               <Typography className={classes.companyNameOnDrawer}>
-                Motion Graphic Studio
+                Kanata Production
               </Typography>
             </Link>
             {drawer}
@@ -196,7 +201,7 @@ function Navigation(props) {
             <img src={logo} alt='logo' className={classes.logoSmUp} />
             <Link to='/'>
               <Typography className={classes.companyNameOnDrawer}>
-                Motion Graphic Studio
+                Kanata Production
               </Typography>
             </Link>
             {drawer}

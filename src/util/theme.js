@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-const drawerWidth = 240;
-const appBarHeight = 70;
+export const drawerWidth = 270;
+export const appBarHeight = 70;
 
 export const theme = createMuiTheme({
   palette: {
@@ -72,11 +72,11 @@ export const styles = (theme) => ({
   logoXs: {
     padding: '10px',
     margin: 'auto 2%',
-    width: 60,
+    width: 40,
   },
   logoSmUp: {
     objectFit: 'contain',
-    paddingBottom: 50,
+    paddingBottom: 20,
     paddingTop: 75,
     backgroundColor: 'black',
   },
@@ -87,21 +87,26 @@ export const styles = (theme) => ({
     display: 'flex',
     justifyContent: 'space-evenly',
     flexWrap: 'nowrap',
-    marginTop: '10%',
+    marginTop: '5%',
   },
   companyNameXs: {
     padding: '10px',
     textAlign: 'center',
     backgroundColor: 'black',
     color: 'white',
-    fontSize: 24,
+    fontSize: '2em',
+    margin: 'auto',
   },
   companyNameOnDrawer: {
     padding: '10px',
-    paddingBottom: '40px',
+    paddingBottom: '10px',
     textAlign: 'center',
     backgroundColor: 'black',
     color: 'white',
-    fontSize: 36,
+    fontSize: '2.6em',
+  },
+  listItemText: {
+    fontSize: '1.5em',
+    margin: theme.spacing(0),
   },
 });

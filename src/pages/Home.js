@@ -1,20 +1,18 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 
+import Paper from '@material-ui/core/Paper';
+
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    width: '100%',
-    height: 'auto',
     flexWrap: 'wrap',
-  },
-  paper: {
     margin: theme.spacing(0),
   },
-  imageContainer: {},
 }));
 
 const Home = () => {
@@ -36,21 +34,41 @@ const Home = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
-      {content.map((contentItem, index) => (
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          md={3}
-          lg={2}
-          component={Grow}
-          in
-          timeout={200 * index}>
-          <img src={contentItem.image} alt={contentItem.title} />
-        </Grid>
-      ))}
-    </div>
+    <Fragment>
+      <div className={classes.container}>
+        {content.map((contentItem, index) => (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            lg={2}
+            component={Grow}
+            in
+            timeout={200 * index}
+            container>
+            <div
+              style={{
+                height: 0,
+                overflow: 'hidden',
+                paddingTop: '20%',
+                position: 'relative',
+                background: `url(${contentItem.image})`,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                justifyContent: 'center',
+              }}>
+              <Paper
+                square
+                style={{
+                  position: 'absolute',
+                }}></Paper>
+            </div>
+          </Grid>
+        ))}
+      </div>
+    </Fragment>
   );
 };
 
