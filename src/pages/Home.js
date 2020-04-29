@@ -32,7 +32,7 @@ const Home = () => {
   }, []);
 
   const classes = useStyles();
-
+  console.log(classes);
   return (
     <Fragment>
       <div className={classes.container}>

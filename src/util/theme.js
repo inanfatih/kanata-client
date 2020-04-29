@@ -35,10 +35,6 @@ export const styles = (theme) => ({
     },
   },
   appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
     [theme.breakpoints.down('xs')]: {
       height: appBarHeight,
     },
@@ -54,7 +50,6 @@ export const styles = (theme) => ({
   },
   content: {
     minHeight: '100vh',
-    backgroundColor: '#DE2548',
     color: '#fff',
     [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -108,5 +103,42 @@ export const styles = (theme) => ({
   listItemText: {
     fontSize: '1.5em',
     margin: theme.spacing(0),
+  },
+
+  imageContentBox: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '3%',
+      paddingTop: `calc(3% + ${appBarHeight}px)`,
+      marginTop: -1 * appBarHeight,
+    },
+    [theme.breakpoints.up('sm')]: {
+      padding: '3%',
+    },
+  },
+
+  imageContent: {
+    [theme.breakpoints.up('md')]: {
+      marginLeft: '10%',
+      marginRight: '10%',
+      padding: '5%',
+    },
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: '5%',
+      marginRight: '5%',
+      padding: '5%',
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: `calc(100% - ${appBarHeight}px)`,
+      padding: '2%',
+    },
+    background: 'white',
+    color: 'black',
+  },
+
+  media: {
+    height: '50vh',
+  },
+  mediaRoot: {
+    margin: 'auto',
   },
 });

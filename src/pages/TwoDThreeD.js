@@ -1,27 +1,60 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 
-import withStyles from '@material-ui/core/styles/withStyles';
-import Grid from '@material-ui/core/Grid';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import Grow from '@material-ui/core/Grow';
+import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+//Pages
 
-const styles = (theme) => ({
-  ...theme.spreadThis,
-});
-class TwoDThreeD extends Component {
-  render() {
-    const { classes } = this.props;
-    return (
-      <Fragment>
-        <Grid container spacing={20} component={Grow} in timeout={500}>
-          <Grid item xs={1} lg={2}>
-            <Paper className={classes.paper} elevation={3}>
-              aaaaaa
-            </Paper>
-          </Grid>
-        </Grid>
-      </Fragment>
-    );
-  }
+import { styles } from '../util/theme';
+
+const useStyles = makeStyles(styles);
+
+export default function TwoDThreeD() {
+  const classes = useStyles();
+
+  console.log(classes);
+  const dummyImage =
+    'https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/1.png?alt=media';
+  return (
+    <Grow in timeout={500}>
+      <div className={classes.imageContentBox}>
+        <Paper className={classes.imageContent} elevation={10}>
+          <Card className={classes.mediaRoot}>
+            <CardActionArea>
+              <CardMedia
+                className={classes.media}
+                image={dummyImage}
+                title='Contemplative Reptile'
+              />
+              <CardContent>
+                <Typography gutterBottom variant='h5' component='h2'>
+                  Lizard
+                </Typography>
+                <Typography variant='body2' color='textSecondary' component='p'>
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button size='small' color='primary'>
+                Share
+              </Button>
+              <Button size='small' color='primary'>
+                Learn More
+              </Button>
+            </CardActions>
+          </Card>
+        </Paper>
+      </div>
+    </Grow>
+  );
 }
-export default withStyles(styles)(TwoDThreeD);
