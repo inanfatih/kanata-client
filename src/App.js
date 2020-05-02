@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
+import { Scrollbars } from 'react-custom-scrollbars';
 //MUI
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -23,7 +24,8 @@ function App() {
   const classes = useStyles();
 
   return (
-    <Router>
+    <Scrollbars style={{ height: '100vh' }}>
+      <Router>
         <Navigation />
         <main className={classes.content}>
           <Switch>
@@ -34,7 +36,8 @@ function App() {
             <Route exact path='/contact' component={Contact} />
           </Switch>
         </main>
-    </Router>
+      </Router>
+    </Scrollbars>
   );
 }
 
