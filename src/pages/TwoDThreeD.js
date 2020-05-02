@@ -15,6 +15,14 @@ import Button from '@material-ui/core/Button';
 
 import { styles } from '../util/theme';
 
+//TODO: FOTOLAR VE VIDEOLAR ARASINDA GECIS ICIN KULLANILACAK: https://github.com/rcaferati/react-awesome-slider
+
+//TODO:AWESOME SLIDER REFERANSLARI: https://caferati.me/demo/react-awesome-slider/scaling
+//TODO: https://fullpage.caferati.me/
+
+//TODO: Sayfalar arasinda gecis icin bunu kullan: https://github.com/rcaferati/ras-fullpage-strategies
+
+
 const useStyles = makeStyles(styles);
 
 export default function TwoDThreeD() {
@@ -27,7 +35,7 @@ export default function TwoDThreeD() {
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
         <Paper className={classes.imageContent} elevation={10}>
-          <Card className={classes.mediaRoot}>
+          <Card className={classes.mediaRoot} elevation={5}>
             <CardActionArea>
               <CardMedia
                 className={classes.media}
@@ -35,12 +43,13 @@ export default function TwoDThreeD() {
                 title='Contemplative Reptile'
               />
               <CardContent>
-                <Typography gutterBottom variant='h5' component='h2'>
+                <Typography gutterBottom variant='h3' component='h2'>
                   Lizard
                 </Typography>
-                <Typography variant='body2' color='textSecondary' component='p'>
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
+                <Typography variant='h6' color='textSecondary' component='p'>
+                  Lizards are a widespread group of squamate reptiles, <br />{' '}
+                  with over 6,000 species, <br />
+                  ranging across all continents except Antarctica
                 </Typography>
               </CardContent>
             </CardActionArea>

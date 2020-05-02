@@ -125,7 +125,7 @@ export const styles = (theme) => ({
     [theme.breakpoints.up('sm')]: {
       marginLeft: '5%',
       marginRight: '5%',
-      padding: '5%',
+      padding: '4%',
     },
     [theme.breakpoints.down('xs')]: {
       height: `calc(100% - ${appBarHeight}px)`,
@@ -136,7 +136,7 @@ export const styles = (theme) => ({
   },
 
   media: {
-    height: '50vh',
+    minHeight: '50vh',
   },
   mediaRoot: {
     margin: 'auto',
