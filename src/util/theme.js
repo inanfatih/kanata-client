@@ -137,5 +137,6 @@ export const styles = (theme) => ({
 
   mediaRoot: {
     margin: 'auto',
+    marginBottom: '2.5%',
   },
 });

@@ -28,6 +28,8 @@ import StarBorder from '@material-ui/icons/StarBorder';
 import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
 
+import MissionIcon from '@material-ui/icons/TrackChanges';
+
 const useStyles = makeStyles(styles);
 
 function Navigation(props) {
@@ -96,7 +98,7 @@ function Navigation(props) {
             </Link>
           </List>
           <List component='div' disablePadding>
-            <Link to='/socialmedia'>
+            <Link to='/social-media'>
               <ListItem button className={classes.nested}>
                 <ListItemIcon className={classes.icons}>
                   <StarBorder />
@@ -108,6 +110,16 @@ function Navigation(props) {
             </Link>
           </List>
         </Collapse>
+        <Link to='/missions-visions'>
+          <ListItem button key='Missions'>
+            <ListItemIcon className={classes.icons}>
+              <MissionIcon />
+            </ListItemIcon>
+            <Typography className={classes.listItemText}>
+              Mission & Vision
+            </Typography>
+          </ListItem>
+        </Link>
         <Link to='/contact'>
           <ListItem button key='Contact'>
             <ListItemIcon className={classes.icons}>

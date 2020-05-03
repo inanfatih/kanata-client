@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from 'axios';
+import ReactPlayer from 'react-player';
 
+//MUI
 import makeStyles from '@material-ui/core/styles/makeStyles';
-
 import Grow from '@material-ui/core/Grow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -13,8 +14,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 //Pages
-
 import { styles } from '../util/theme';
+import '../App.css';
 
 //TODO: FOTOLAR VE VIDEOLAR ARASINDA GECIS ICIN KULLANILACAK: https://github.com/rcaferati/react-awesome-slider
 
@@ -38,7 +39,7 @@ export default function TwoDThreeD(props) {
     axios
       .get(`/content/${contentId}`)
       .then((res) => {
-        console.log(res.data);
+        console.log('res.data', res.data);
         setContent(res.data);
       })
       .catch((err) => {
@@ -48,7 +49,51 @@ export default function TwoDThreeD(props) {
 
   //TODO: video oldugunda video gosterilecek sekilde degistir
 
-  return (
+  return contentPage.type === 3 ? (
+    // Video content
+    <Grow in timeout={500}>
+      <div className={classes.imageContentBox}>
+        <Paper className={classes.imageContent} elevation={10}>
+          <Card className={classes.mediaRoot} elevation={5}>
+            <CardActionArea disableTouchRipple>
+              <div className='player-wrapper'>
+                <ReactPlayer
+                  url={contentPage.videoUrl}
+                  width='100%'
+                  height='100%'
+                  className='react-player'
+                />
+              </div>
+              <CardMedia
+                className={classes.cardMedia}
+                title={contentPage.title}
+              />
+              <CardContent>
+                <Typography gutterBottom variant='h3'>
+                  {contentPage.title}
+                </Typography>
+                <Typography gutterBottom variant='h5'>
+                  {contentPage.subtitle}
+                </Typography>
+                <Typography variant='h6' color='textSecondary' component='p'>
+                  {contentPage.description}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button size='small' color='primary'>
+                Share
+              </Button>
+              <Button size='small' color='primary'>
+                Learn More
+              </Button>
+            </CardActions>
+          </Card>
+        </Paper>
+      </div>
+    </Grow>
+  ) : (
+    //Image AND Social Media Content
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
         <Paper className={classes.imageContent} elevation={10}>

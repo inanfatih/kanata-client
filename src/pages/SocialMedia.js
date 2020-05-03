@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import ThumbnailCards from './ThumbnailCards';
 
 export default class SocialMedia extends Component {
   render() {
-    return <div>SocialMedia</div>;
+    return <ThumbnailCards dataPath='/social-media' />;
   }
 }
