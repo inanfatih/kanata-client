@@ -28,7 +28,7 @@ const useStyles = makeStyles(styles);
 export default function TwoDThreeD(props) {
   //TODO: direct to home incase of not found content
 
-  const [content, setContent] = React.useState([]);
+  const [contentPage, setContent] = React.useState([]);
 
   const classes = useStyles();
 
@@ -46,26 +46,32 @@ export default function TwoDThreeD(props) {
       });
   }, [contentId]);
 
+  //TODO: video oldugunda video gosterilecek sekilde degistir
+
   return (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
         <Paper className={classes.imageContent} elevation={10}>
           <Card className={classes.mediaRoot} elevation={5}>
-            <CardActionArea style={{ cursor: 'default' }}>
+            <CardActionArea
+              style={{
+                cursor: 'default',
+              }}>
               <CardMedia
-                className={classes.media}
-                image={content.image}
-                title={content.title}
+                component='img'
+                className={classes.cardMedia}
+                image={contentPage.image}
+                title={contentPage.title}
               />
               <CardContent>
                 <Typography gutterBottom variant='h3'>
-                  {content.title}
+                  {contentPage.title}
                 </Typography>
                 <Typography gutterBottom variant='h5'>
-                  {content.subtitle}
+                  {contentPage.subtitle}
                 </Typography>
                 <Typography variant='h6' color='textSecondary' component='p'>
-                  {content.description}
+                  {contentPage.description}
                 </Typography>
               </CardContent>
             </CardActionArea>

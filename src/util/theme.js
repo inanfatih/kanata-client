@@ -112,32 +112,29 @@ export const styles = (theme) => ({
       marginTop: -1 * appBarHeight,
     },
     [theme.breakpoints.up('sm')]: {
-      padding: '3%',
+      padding: '2%',
     },
   },
 
   imageContent: {
-    [theme.breakpoints.up('md')]: {
-      marginLeft: '10%',
-      marginRight: '10%',
-      padding: '5%',
-    },
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: '5%',
-      marginRight: '5%',
-      padding: '4%',
-    },
     [theme.breakpoints.down('xs')]: {
       height: `calc(100% - ${appBarHeight}px)`,
+      padding: '2%',
+    },
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: '2%',
+      marginRight: '2%',
       padding: '2%',
     },
     background: 'white',
     color: 'black',
   },
 
-  media: {
-    minHeight: '50vh',
+  cardMedia: {
+    minWidth: '100%',
+    backgroundSize: 'contain',
   },
+
   mediaRoot: {
     margin: 'auto',
   },
