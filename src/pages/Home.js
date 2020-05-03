@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react';
+import '../App.css';
 
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import Typography from '@material-ui/core/Typography';
-
-import Paper from '@material-ui/core/Paper';
 
 import { drawerWidth } from '../util/theme';
 
@@ -90,24 +89,19 @@ const Home = () => {
             timeout={200 * index}
             container
             style={{
-              background: `url(${contentItem.image})`,
               backgroundImage: `url(${contentItem.image})`,
             }}>
             <Typography
               style={{
                 height: gridWidth,
-                overflow: 'hidden',
-                position: 'relative',
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
-                justifyContent: 'center',
               }}>
-              <Paper
-                square
-                style={{
-                  position: 'absolute',
-                }}></Paper>
+              <div className='imagebox'>
+                <h1>{contentItem.title}</h1>
+                <h4>{contentItem.description}</h4>
+              </div>
             </Typography>
           </Grid>
         ))}
