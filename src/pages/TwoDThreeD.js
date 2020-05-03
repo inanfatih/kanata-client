@@ -1,69 +1,120 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import '../App.css';
+import { Link } from 'react-router-dom';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
+import axios from 'axios';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-//Pages
 
-import { styles } from '../util/theme';
+import { drawerWidth } from '../util/theme';
 
-//TODO: FOTOLAR VE VIDEOLAR ARASINDA GECIS ICIN KULLANILACAK: https://github.com/rcaferati/react-awesome-slider
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    margin: theme.spacing(0),
+  },
+}));
 
-//TODO:AWESOME SLIDER REFERANSLARI: https://caferati.me/demo/react-awesome-slider/scaling
-//TODO: https://fullpage.caferati.me/
+const getWindowDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height,
+  };
+};
 
-//TODO: Sayfalar arasinda gecis icin bunu kullan: https://github.com/rcaferati/ras-fullpage-strategies
-
-
-const useStyles = makeStyles(styles);
-
-export default function TwoDThreeD() {
-  const classes = useStyles();
-
-  console.log(classes);
-  const dummyImage =
-    'https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/1.png?alt=media';
-  return (
-    <Grow in timeout={500}>
-      <div className={classes.imageContentBox}>
-        <Paper className={classes.imageContent} elevation={10}>
-          <Card className={classes.mediaRoot} elevation={5}>
-            <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={dummyImage}
-                title='Contemplative Reptile'
-              />
-              <CardContent>
-                <Typography gutterBottom variant='h3' component='h2'>
-                  Lizard
-                </Typography>
-                <Typography variant='h6' color='textSecondary' component='p'>
-                  Lizards are a widespread group of squamate reptiles, <br />{' '}
-                  with over 6,000 species, <br />
-                  ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Button size='small' color='primary'>
-                Share
-              </Button>
-              <Button size='small' color='primary'>
-                Learn More
-              </Button>
-            </CardActions>
-          </Card>
-        </Paper>
-      </div>
-    </Grow>
+function useWindowDimensions() {
+  const [windowDimensions, setWindowDimensions] = React.useState(
+    getWindowDimensions(),
   );
+
+  React.useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowDimensions;
 }
+
+const TwoDThreeD = () => {
+  const [content, setContent] = React.useState([]);
+
+  const { height, width } = useWindowDimensions();
+
+  React.useEffect(() => {
+    axios
+      .get('/2d3d')
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+        setContent(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const classes = useStyles();
+  console.log(classes);
+  console.log('width: ', width);
+  console.log('height: ', height);
+
+  let gridWidth = 100;
+  if (width >= 1920) {
+    gridWidth = (width - drawerWidth) / 6;
+  } else if (width >= 1280) {
+    gridWidth = (width - drawerWidth) / 4;
+  } else if (width >= 960) {
+    gridWidth = (width - drawerWidth) / 3;
+  } else if (width >= 600) {
+    gridWidth = (width - drawerWidth) / 2;
+  } else gridWidth = width;
+
+  return (
+    <Fragment>
+      <div className={classes.container}>
+        {content.map((contentItem, index) => (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={2}
+            component={Grow}
+            in
+            timeout={200 * index}
+            container
+            style={{
+              backgroundImage: `url(${contentItem.image})`,
+              cursor: 'pointer',
+            }}>
+            <Typography
+              component={Link}
+              to={`/content/${contentItem.contentId}`}
+              style={{
+                height: gridWidth,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+              }}>
+              <div className='imagebox'>
+                <h1>{contentItem.title}</h1>
+                <h4>{contentItem.subtitle}</h4>
+              </div>
+            </Typography>
+          </Grid>
+        ))}
+      </div>
+    </Fragment>
+  );
+};
+
+export default TwoDThreeD;

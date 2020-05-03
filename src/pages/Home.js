@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import '../App.css';
+import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
@@ -66,11 +67,13 @@ const Home = () => {
   console.log('height: ', height);
 
   let gridWidth = 100;
-  if (width > 1280) {
+  if (width >= 1920) {
     gridWidth = (width - drawerWidth) / 6;
-  } else if (width > 960) {
+  } else if (width >= 1280) {
     gridWidth = (width - drawerWidth) / 4;
-  } else if (width > 600) {
+  } else if (width >= 960) {
+    gridWidth = (width - drawerWidth) / 3;
+  } else if (width >= 600) {
     gridWidth = (width - drawerWidth) / 2;
   } else gridWidth = width;
 
@@ -82,16 +85,23 @@ const Home = () => {
             item
             xs={12}
             sm={6}
-            md={3}
-            lg={2}
+            md={4}
+            lg={3}
+            xl={2}
             component={Grow}
             in
             timeout={200 * index}
             container
             style={{
               backgroundImage: `url(${contentItem.image})`,
+              cursor: 'pointer',
             }}>
             <Typography
+              component={Link}
+              to={{
+                pathname: `/content/${contentItem.contentId}`,
+                contentId: contentItem.contentId,
+              }}
               style={{
                 height: gridWidth,
                 backgroundSize: 'cover',
@@ -100,7 +110,7 @@ const Home = () => {
               }}>
               <div className='imagebox'>
                 <h1>{contentItem.title}</h1>
-                <h4>{contentItem.description}</h4>
+                <h4>{contentItem.subtitle}</h4>
               </div>
             </Typography>
           </Grid>

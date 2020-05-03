@@ -22,6 +22,7 @@ img {
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
+  padding-bottom: 10px;
 }
 
 .imagebox:hover {
@@ -31,10 +32,11 @@ img {
 .imagebox h1,
 h4 {
   visibility: hidden;
+  padding-bottom: 10px;
+  padding-left: 10px;
 }
 
 .imagebox:hover h1 {
-  padding: 10px;
   font-size: 20px;
   visibility: visible;
   font-weight: 400;
@@ -43,7 +45,6 @@ h4 {
 
 .imagebox:hover h4 {
   font-weight: 400;
-  padding: 0 10px;
   font-size: 14px;
   align-self: flex-start;
   visibility: visible;

@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import TwoDThreeD from './pages/TwoDThreeD';
 import Videos from './pages/Videos';
 import SocialMedia from './pages/SocialMedia';
+import Content from './pages/Content';
 
 axios.defaults.baseURL =
   'https://us-central1-kanata-production.cloudfunctions.net/api';
@@ -29,11 +30,12 @@ function App() {
         <Navigation />
         <main className={classes.content}>
           <Switch>
-            <Route exact path='/' component={Home} />
             <Route exact path='/2d3d' component={TwoDThreeD} />
             <Route exact path='/videos' component={Videos} />
             <Route exact path='/socialmedia' component={SocialMedia} />
             <Route exact path='/contact' component={Contact} />
+            <Route exact path='/content/:contentId' component={Content} />
+            <Route path='/' component={Home} />
           </Switch>
         </main>
       </Router>
