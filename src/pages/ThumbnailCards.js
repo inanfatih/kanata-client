@@ -93,7 +93,7 @@ const ThumbnailCards = (props) => {
             timeout={200 * index}
             container
             style={{
-              backgroundImage: `url(${contentItem.image})`,
+              backgroundImage: `url(${contentItem.thumbnail})`,
               cursor: 'pointer',
             }}>
             <Typography

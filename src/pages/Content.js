@@ -27,9 +27,8 @@ import '../App.css';
 const useStyles = makeStyles(styles);
 
 export default function TwoDThreeD(props) {
-  //TODO: direct to home incase of not found content
-
   const [contentPage, setContent] = React.useState([]);
+  const [images, setImage] = React.useState([]);
 
   const classes = useStyles();
 
@@ -41,16 +40,14 @@ export default function TwoDThreeD(props) {
       .then((res) => {
         console.log('res.data', res.data);
         setContent(res.data);
+        setImage(res.data.imageList);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [contentId]);
 
-  //TODO: video oldugunda video gosterilecek sekilde degistir
-
-  return contentPage.type === 3 ? (
-    // Video content
+  const videoMarkup = (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
         <Paper className={classes.imageContent} elevation={10}>
@@ -92,8 +89,9 @@ export default function TwoDThreeD(props) {
         </Paper>
       </div>
     </Grow>
-  ) : (
-    //Image AND Social Media Content
+  );
+
+  const socialMediaMarkup = (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
         <Paper className={classes.imageContent} elevation={10}>
@@ -105,7 +103,7 @@ export default function TwoDThreeD(props) {
               <CardMedia
                 component='img'
                 className={classes.cardMedia}
-                image={contentPage.image}
+                image={contentPage.mainImage}
                 title={contentPage.title}
               />
               <CardContent>
@@ -133,4 +131,64 @@ export default function TwoDThreeD(props) {
       </div>
     </Grow>
   );
+
+  const twoDthreeDMarkup = (
+    <Grow in timeout={500}>
+      <div className={classes.imageContentBox}>
+        <Paper className={classes.imageContent} elevation={10}>
+          <Card className={classes.mediaRoot} elevation={5}>
+            <CardActionArea
+              style={{
+                cursor: 'default',
+              }}>
+              <CardMedia
+                component='img'
+                className={classes.cardMedia}
+                image={contentPage.mainImage}
+                title={contentPage.title}
+              />
+              <CardContent>
+                <Typography gutterBottom variant='h3'>
+                  {contentPage.title}
+                </Typography>
+                <Typography gutterBottom variant='h5'>
+                  {contentPage.subtitle}
+                </Typography>
+                <Typography variant='h6' color='textSecondary' component='p'>
+                  {contentPage.description}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size='small' color='primary'>
+                  Share
+                </Button>
+                <Button size='small' color='primary'>
+                  Learn More
+                </Button>
+              </CardActions>
+            </CardActionArea>
+          </Card>
+          {images.map((imageLink) => (
+            <Card className={classes.mediaRoot} elevation={5}>
+              <CardContent>
+                <CardMedia
+                  component='img'
+                  className={classes.cardMedia}
+                  image={imageLink}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </Paper>
+      </div>
+    </Grow>
+  );
+
+  return contentPage.type === 3
+    ? // Video content
+      videoMarkup
+    : //Social Media Content
+    contentPage.type === 1
+    ? socialMediaMarkup
+    : twoDthreeDMarkup;
 }
