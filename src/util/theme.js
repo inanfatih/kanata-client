@@ -76,7 +76,7 @@ export const styles = (theme) => ({
     backgroundColor: 'black',
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: theme.spacing(7),
   },
   socialMediaIcons: {
     display: 'flex',
@@ -138,5 +138,37 @@ export const styles = (theme) => ({
   mediaRoot: {
     margin: 'auto',
     marginBottom: '2.5%',
+  },
+
+  contactContentBox: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '3%',
+      paddingTop: `calc(3% + ${appBarHeight}px)`,
+      marginTop: -1 * appBarHeight,
+      height: `calc(100% - ${appBarHeight}px)`,
+    },
+    [theme.breakpoints.up('sm')]: {
+      padding: '2% 20%',
+    },
+  },
+
+  contactContent: {
+    [theme.breakpoints.down('xs')]: {
+      padding: '5%',
+    },
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: '5%',
+      marginRight: '5%',
+      padding: '5%',
+    },
+    background: 'white',
+    color: 'black',
+  },
+
+  contactForm: {
+    '& .MuiTextField-root': {
+      margin: theme.spacing(2),
+      width: '95%',
+    },
   },
 });
