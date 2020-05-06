@@ -26,7 +26,9 @@ const Contact = () => {
   const [message, setMessage] = React.useState('');
   const [errors, setErrors] = React.useState('');
   const [isFailed, setIsFailed] = React.useState(false);
+  const [isPosted, setIsPosted] = React.useState(false);
   const [isSuccessful, setIsSuccessful] = React.useState(false);
+  const [emailInvalid, setEmailInvalid] = React.useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     let messageObject = {
@@ -47,6 +49,7 @@ const Contact = () => {
         setEmail('');
         setPhone('');
         setMessage('');
+        setIsPosted(true);
         setTimeout(() => {
           setIsFailed(false);
           setIsSuccessful(false);
@@ -58,6 +61,14 @@ const Contact = () => {
         console.log('errors', errors);
         setIsFailed(true);
         console.log('isFailed', isFailed);
+        setIsPosted(true);
+        if (
+          !email.match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+          )
+        ) {
+          setEmailInvalid(true);
+        } else setEmailInvalid(false);
         setTimeout(() => {
           setIsFailed(false);
           setIsSuccessful(false);
@@ -92,6 +103,13 @@ const Contact = () => {
                     }
                     value={name}
                     onInput={(e) => setName(e.target.value)}
+                    error={
+                      !isPosted
+                        ? false
+                        : !isSuccessful && name.length === 0
+                        ? true
+                        : false
+                    }
                   />
                   <TextField
                     required
@@ -99,10 +117,22 @@ const Contact = () => {
                     label='Email'
                     variant='outlined'
                     value={email}
-                    onInput={(e) => setEmail(e.target.value)}
+                    onInput={(e) => {
+                      setEmail(e.target.value);
+                      if (
+                        !email.match(
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        )
+                      ) {
+                        setEmailInvalid(true);
+                      } else setEmailInvalid(false);
+                    }}
+                    error={
+                      emailInvalid && isPosted && !isSuccessful ? true : false
+                    }
                     helperText={
-                      email.length === 0
-                        ? 'Please enter your email address'
+                      email.length === 0 || emailInvalid
+                        ? 'Please enter a valid email address'
                         : ''
                     }
                   />
@@ -116,6 +146,13 @@ const Contact = () => {
                     helperText={
                       phone.length === 0 ? 'Please enter your phone number' : ''
                     }
+                    error={
+                      !isPosted
+                        ? false
+                        : !isSuccessful && phone.length === 0
+                        ? true
+                        : false
+                    }
                   />
                   <TextField
                     required
@@ -128,6 +165,13 @@ const Contact = () => {
                     onInput={(e) => setMessage(e.target.value)}
                     helperText={
                       message.length === 0 ? 'Please enter your message' : ''
+                    }
+                    error={
+                      !isPosted
+                        ? false
+                        : !isSuccessful && message.length === 0
+                        ? true
+                        : false
                     }
                   />
                   <FormHelperText
@@ -164,7 +208,7 @@ const Contact = () => {
                         textAlign: 'center',
                         color: 'white',
                       }}>
-                      SENDING FAILED
+                      SENDING FAILED - Please enter all fields
                     </Button>
                   )}
                   <Button

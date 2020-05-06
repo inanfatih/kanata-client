@@ -16,6 +16,8 @@ import Videos from './pages/Videos';
 import SocialMedia from './pages/SocialMedia';
 import Content from './pages/Content';
 import MisionVision from './pages/MisionVision';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
 
 axios.defaults.baseURL =
   'https://us-central1-kanata-production.cloudfunctions.net/api';
@@ -32,6 +34,8 @@ function App() {
         <main className={classes.content}>
           <Switch>
             <Route exact path='/2d3d' component={TwoDThreeD} />
+            <Route exact path='/admin' component={Admin} />
+            <Route exact path='/login' component={Login} />
             <Route exact path='/missions-visions' component={MisionVision} />
             <Route exact path='/videos' component={Videos} />
             <Route exact path='/social-media' component={SocialMedia} />
