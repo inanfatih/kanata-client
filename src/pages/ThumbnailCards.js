@@ -10,6 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
+import Paper from '@material-ui/core/Paper';
+
+import CardMedia from '@material-ui/core/CardMedia';
 
 import { drawerWidth } from '../util/theme';
 
@@ -71,27 +74,25 @@ const ThumbnailCards = (props) => {
 
   let gridWidth = 100;
   if (width >= 1920) {
-    gridWidth = (width - drawerWidth) / 6;
-  } else if (width >= 1280) {
     gridWidth = (width - drawerWidth) / 4;
-  } else if (width >= 960) {
+  } else if (width >= 1280) {
     gridWidth = (width - drawerWidth) / 3;
-  } else if (width >= 600) {
+  } else if (width >= 960) {
     gridWidth = (width - drawerWidth) / 2;
+  } else if (width >= 600) {
+    gridWidth = width - drawerWidth;
   } else gridWidth = width;
 
   let contentMarkup =
-    width >= 600 ? (
+    width >= 960 ? (
       <div className={classes.container}>
         {content.map((contentItem, index) => (
           <Grid
             key={contentItem.contentId}
             item
-            xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            xl={2}
+            md={6}
+            lg={4}
+            xl={3}
             component={Grow}
             in
             timeout={200 * index}
@@ -123,41 +124,49 @@ const ThumbnailCards = (props) => {
     ) : (
       <div className='red-bgcolor'>
         {content.map((contentItem, index) => (
-          <Typography
-            component={Link}
-            to={{
-              pathname: `/content/${contentItem.contentId}`,
-              contentId: contentItem.contentId,
-            }}
-            style={{
-              height: gridWidth,
-              width: gridWidth,
-              background: '#DE2548',
-            }}>
-            <div
-              key={contentItem.contentId}
-              timeout={200 * index}
-              style={{
-                backgroundImage: `url(${contentItem.thumbnail})`,
-                cursor: 'pointer',
-                height: gridWidth,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                borderTopLeftRadius: '1%',
-                borderTopRightRadius: '1%',
-              }}
-            />
-
-            <Card className='mediaRootXsThumbnail' elevation={5}>
-              <CardActionArea>
-                <CardContent>
-                  <div> {contentItem.title}</div>
-                  <div> {contentItem.subtitle}</div>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Typography>
+          <Grow in timeout={500 * index}>
+            <div className={classes.imageContentBox}>
+              <Paper
+                className={[classes.imageContent, 'mediaRootXsThumbnail']}
+                elevation={3}>
+                <Card
+                  component={Link}
+                  to={{
+                    pathname: `/content/${contentItem.contentId}`,
+                    contentId: contentItem.contentId,
+                  }}>
+                  <CardActionArea
+                    style={{
+                      cursor: 'default',
+                    }}>
+                    <CardMedia
+                      component='img'
+                      className={classes.cardMedia}
+                      image={contentItem.thumbnail}
+                      title={contentItem.title}
+                      style={{
+                        cursor: 'pointer',
+                        height: gridWidth,
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        borderTopLeftRadius: '1%',
+                        borderTopRightRadius: '1%',
+                      }}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant='h5'>
+                        {contentItem.title}
+                      </Typography>
+                      <Typography gutterBottom variant='subtitle1'>
+                        {contentItem.subtitle}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Paper>
+            </div>
+          </Grow>
         ))}
       </div>
     );

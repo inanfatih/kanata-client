@@ -110,9 +110,11 @@ export const styles = (theme) => ({
       padding: '3%',
       paddingTop: `calc(3% + ${appBarHeight}px)`,
       marginTop: -1 * appBarHeight,
+      background: '#DE2548',
     },
     [theme.breakpoints.up('sm')]: {
       padding: '2%',
+      background: '#DE2548',
     },
   },
 
