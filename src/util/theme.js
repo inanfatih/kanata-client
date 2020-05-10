@@ -17,7 +17,7 @@ export const theme = createMuiTheme({
       dark: '#b22a00',
       contrastText: '#fff',
     },
-    background: '#DE2548',
+    // background: '#DE2548',
   },
   typography: {
     fontFamily: "['Oswald', 'sans-serif'].join(',')",

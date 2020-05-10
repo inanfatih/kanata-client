@@ -7,6 +7,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
 import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
 
 import { drawerWidth } from '../util/theme';
 
@@ -38,7 +41,7 @@ function useWindowDimensions() {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [windowDimensions]);
 
   return windowDimensions;
 }
@@ -77,11 +80,12 @@ const ThumbnailCards = (props) => {
     gridWidth = (width - drawerWidth) / 2;
   } else gridWidth = width;
 
-  return (
-    <Fragment>
+  let contentMarkup =
+    width >= 600 ? (
       <div className={classes.container}>
         {content.map((contentItem, index) => (
           <Grid
+            key={contentItem.contentId}
             item
             xs={12}
             sm={6}
@@ -116,8 +120,48 @@ const ThumbnailCards = (props) => {
           </Grid>
         ))}
       </div>
-    </Fragment>
-  );
+    ) : (
+      <div className='red-bgcolor'>
+        {content.map((contentItem, index) => (
+          <Typography
+            component={Link}
+            to={{
+              pathname: `/content/${contentItem.contentId}`,
+              contentId: contentItem.contentId,
+            }}
+            style={{
+              height: gridWidth,
+              width: gridWidth,
+              background: '#DE2548',
+            }}>
+            <div
+              key={contentItem.contentId}
+              timeout={200 * index}
+              style={{
+                backgroundImage: `url(${contentItem.thumbnail})`,
+                cursor: 'pointer',
+                height: gridWidth,
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                borderTopLeftRadius: '1%',
+                borderTopRightRadius: '1%',
+              }}
+            />
+
+            <Card className='mediaRootXsThumbnail' elevation={5}>
+              <CardActionArea>
+                <CardContent>
+                  <div> {contentItem.title}</div>
+                  <div> {contentItem.subtitle}</div>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Typography>
+        ))}
+      </div>
+    );
+  return <Fragment>{contentMarkup}</Fragment>;
 };
 
 export default ThumbnailCards;

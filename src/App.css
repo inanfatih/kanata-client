@@ -60,3 +60,15 @@ h4 {
   top: 0;
   left: 0;
 }
+
+.red-bgcolor {
+  background: #de2548;
+}
+
+.containerXs {
+  padding: 2%;
+}
+
+.mediaRootXsThumbnail {
+  margin-bottom: 3%;
+}
