@@ -155,7 +155,7 @@ const ThumbnailCards = (props) => {
                       }}
                     />
                     <CardContent>
-                      <Typography gutterBottom variant='h5'>
+                      <Typography gutterBottom variant='h1'>
                         {contentItem.title}
                       </Typography>
                       <Typography gutterBottom variant='subtitle1'>

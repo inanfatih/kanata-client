@@ -150,7 +150,7 @@ export const styles = (theme) => ({
       height: `calc(100% - ${appBarHeight}px)`,
     },
     [theme.breakpoints.up('sm')]: {
-      padding: '2% 20%',
+      padding: '2% 10%',
     },
   },
 
@@ -172,5 +172,12 @@ export const styles = (theme) => ({
       margin: theme.spacing(2),
       width: '95%',
     },
+  },
+  customError: {
+    color: 'red',
+    fontSize: '1.5rem',
+    width: '95%',
+    padding: '1%',
+    textAlign: 'center',
   },
 });

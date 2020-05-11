@@ -151,6 +151,7 @@ function Navigation(props) {
           <i className='fab fa-facebook-square fa-2x'></i>
         </a>
       </div>
+      <br />
     </div>
   );
 
