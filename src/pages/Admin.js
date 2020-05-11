@@ -1,11 +1,60 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Admin = () => {
-    return (
-        <div>
-            
-        </div>
-    );
+//MUI
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+
+import kpLogo from '../images/kpLogo.png';
+
+//Pages
+import { styles } from '../util/theme';
+import '../App.css';
+
+const useStyles = makeStyles(styles);
+
+export default function Admin() {
+  const classes = useStyles();
+  return (
+    <div className={classes.contactContentBox}>
+      <Paper className={classes.contactContent} elevation={10}>
+        <Card className={classes.contactRoot} elevation={5}>
+          <CardContent style={{ justifyContent: 'center' }}>
+            <img
+              src={kpLogo}
+              alt='Logo'
+              style={{
+                margin: '0 40%',
+                marginTop: '5%',
+                width: '20%',
+              }}
+            />
+
+            <Button
+              size='large'
+              variant='contained'
+              color='primary'
+              style={{ margin: '1% 2%', width: '95%', padding: '1%' }}
+              component={Link}
+              to='/create-content'>
+              Create Content
+            </Button>
+
+            <Button
+              size='large'
+              variant='contained'
+              color='primary'
+              style={{ margin: '1% 2%', width: '95%', padding: '1%' }}
+              component={Link}
+              to='/edit-content'>
+              Edit Content
+            </Button>
+          </CardContent>
+        </Card>
+      </Paper>
+    </div>
+  );
 }
-
-export default Admin;
