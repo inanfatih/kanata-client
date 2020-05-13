@@ -102,6 +102,7 @@ class login extends Component {
                       id='email'
                       name='email'
                       type='email'
+                      variant='outlined'
                       label='Email'
                       className={classes.textField}
                       helperText={errors.email}
@@ -114,6 +115,7 @@ class login extends Component {
                       id='password'
                       name='password'
                       type='password'
+                      variant='outlined'
                       label='Password'
                       className={classes.textField}
                       helperText={errors.password}

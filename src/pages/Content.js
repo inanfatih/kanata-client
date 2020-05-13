@@ -26,7 +26,7 @@ import '../App.css';
 
 const useStyles = makeStyles(styles);
 
-export default function TwoDThreeD(props) {
+export default function Content(props) {
   const [contentPage, setContent] = React.useState({});
   const [images, setImage] = React.useState([]);
 

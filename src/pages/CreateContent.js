@@ -1,7 +1,298 @@
 import React from 'react';
 
+import kpLogo from '../images/kpLogo.png';
+import axios from 'axios';
+
+//MUI stuff
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import { styles } from '../util/theme';
+import '../App.css';
+
+const useStyles = makeStyles(styles);
+
 const CreateContent = () => {
-  return <div>Create Content</div>;
+  const classes = useStyles();
+
+  const [title, setTitle] = React.useState('');
+  const [subtitle, setSubtitle] = React.useState('');
+  const [type, setType] = React.useState(1);
+  const [description, setDescription] = React.useState('');
+  const [errors, setErrors] = React.useState([]);
+  const [thumbnail, setThumbnail] = React.useState('');
+  const [mainImage, setMainImage] = React.useState('');
+  const [imageList, setImageList] = React.useState(['', '']);
+  const [videoUrl, setVideoUrl] = React.useState('');
+  const [orderNo, setOrderNo] = React.useState('');
+  const [setLoading, loading] = React.useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let contentData = {
+      title: title,
+      subtitle: subtitle,
+      type: type,
+      description: description,
+      thumbnail: thumbnail,
+      mainImage: mainImage,
+      imageList: imageList,
+      videoUrl: videoUrl,
+      orderNo: orderNo,
+    };
+    console.log('handleSubmit', event);
+
+    setLoading(true);
+
+    axios
+      .post('/content', contentData)
+      .then((res) => {
+        // console.log(res.data);
+        localStorage.setItem(
+          'KanataProductionToken',
+          `Bearer ${res.data.token}`,
+        );
+        setLoading(false);
+        //TODO:  CLEAR FORM HERE
+      })
+      .catch((err) => {
+        // this.setState({
+        //   errors: err.response.data,
+        // });
+      });
+  };
+
+  const removeImage = (index) => {
+    const imageList2 = imageList;
+    setImageList(imageList2.splice(index, 1));
+  };
+
+  const incrementImageCount = () => {
+    const imageList2 = imageList;
+    imageList2.push('');
+    setImageList(imageList2);
+  };
+
+  const handleChange = (event) => {
+    console.log('handleChange', event);
+    // this.setState({
+    //   [event.target.name]: event.target.value,
+    // });
+  };
+
+  return (
+    <div>
+      <Grow in timeout={500}>
+        <div className={classes.contactContentBox}>
+          <Paper className={classes.contactContent} elevation={10}>
+            <Card elevation={5}>
+              <CardContent style={{ justifyContent: 'center' }}>
+                <form onSubmit={handleSubmit} className={classes.contactForm}>
+                  <Typography
+                    variant='h4'
+                    component='h2'
+                    style={{
+                      marginBottom: '1%',
+                      marginLeft: '2%',
+                      width: '95%',
+                    }}>
+                    Create Content
+                  </Typography>
+
+                  <TextField
+                    id='title'
+                    name='title'
+                    label='Title'
+                    variant='outlined'
+                    helperText={errors.email}
+                    error={errors.email ? true : false}
+                    value={title}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+
+                  <TextField
+                    id='subtitle'
+                    name='subtitle'
+                    label='Subtitle'
+                    variant='outlined'
+                    helperText={errors.subtitle}
+                    error={errors.subtitle ? true : false}
+                    value={subtitle}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+
+                  <TextField
+                    id='outlined-multiline-static'
+                    name='description'
+                    label='Description'
+                    variant='outlined'
+                    multiline
+                    rows={4}
+                    helperText={errors.description}
+                    error={errors.description ? true : false}
+                    value={description}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+
+                  <TextField
+                    id='orderNo'
+                    name='orderNo'
+                    label='Displaying Priority'
+                    type='number'
+                    variant='outlined'
+                    error={errors.orderNo ? true : false}
+                    value={orderNo}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+
+                  <div
+                    style={{
+                      marginBottom: '2%',
+                      marginLeft: '2%',
+                      marginTop: '2%',
+                      width: '95%',
+                      border: '1px solid #C4C4C4',
+                      borderRadius: '4px',
+                    }}>
+                    <FormControl
+                      component='fieldset'
+                      style={{
+                        marginBottom: '2%',
+                        marginLeft: '2%',
+                        marginTop: '2%',
+                        width: '95%',
+                      }}>
+                      <FormLabel component='legend'>Content Type</FormLabel>
+                      <RadioGroup
+                        aria-label='contentType'
+                        name='contentType'
+                        value={type}
+                        onChange={handleChange}>
+                        <FormControlLabel
+                          value='socialMedia'
+                          control={<Radio />}
+                          label='Social Media'
+                        />
+                        <FormControlLabel
+                          value='TwoDThreeD'
+                          control={<Radio />}
+                          label='2D & 3D'
+                        />
+                        <FormControlLabel
+                          value='video'
+                          control={<Radio />}
+                          label='Video'
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                  <TextField
+                    id='videoUrl'
+                    name='videoUrl'
+                    label='Video Url'
+                    variant='outlined'
+                    helperText={errors.videoUrl}
+                    error={errors.videoUrl ? true : false}
+                    value={videoUrl}
+                    onChange={handleChange}
+                    fullWidth
+                  />
+
+                  <div
+                    style={{
+                      marginBottom: '2%',
+                      marginLeft: '2%',
+                      marginTop: '2%',
+                      width: '95%',
+                      border: '1px solid #C4C4C4',
+                      borderRadius: '4px',
+                      padding: '2%',
+                      color: 'grey',
+                    }}>
+                    <div>Upload images for Social Media</div>
+                    {imageList.map((item, index) => (
+                      <div>
+                        <Button variant='contained' component='label'>
+                          <input type='file' />
+                        </Button>
+                        <Button onClick={() => removeImage(index)}>
+                          <RemoveCircleIcon />
+                        </Button>
+                      </div>
+                    ))}
+
+                    <Button
+                      onClick={() => {
+                        incrementImageCount();
+                      }}>
+                      Add more images: <AddCircleIcon />
+                    </Button>
+                  </div>
+
+                  <Button
+                    size='large'
+                    type='submit'
+                    variant='contained'
+                    color='primary'
+                    style={{ margin: '2%', width: '95%', padding: '1%' }}
+                    disabled={!loading && !errors}>
+                    Create Content
+                    {loading && (
+                      <CircularProgress
+                        className='classes.progress'
+                        size='30'></CircularProgress>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </Paper>
+        </div>
+      </Grow>
+    </div>
+  );
 };
 
 export default CreateContent;
+
+/* SAMPLE DATA
+{
+    "description": "Coşar Producer: Murat Erdağı 3D Supervisor: Berkay Bentürküm",
+    "subtitle": " star subtitle",
+    "title": "Dream star",
+    "type": 2,
+    "videoUrl": "https://vimeo.com/383209692",
+    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/1.png?alt=media",
+    "mainImage": "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/6.png?alt=media",
+    "orderNo": 1,
+    "imageList": [
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/5.png?alt=media",
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/6.png?alt=media",
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/7.png?alt=media",
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/8.png?alt=media",
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/9.png?alt=media",
+        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/4.png?alt=media"
+    ]
+}
+*/
