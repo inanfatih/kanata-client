@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import kpLogo from '../images/kpLogo.png';
 import axios from 'axios';
 
 //MUI stuff
@@ -26,20 +25,23 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import { styles } from '../util/theme';
 import '../App.css';
+import { ContentContext } from '../contexts/ContentContext';
 
 const useStyles = makeStyles(styles);
 
 const CreateContent = () => {
+  const { content } = useContext(ContentContext);
+
   const classes = useStyles();
 
   const [title, setTitle] = React.useState('');
   const [subtitle, setSubtitle] = React.useState('');
-  const [type, setType] = React.useState(1);
+  const [type, setType] = React.useState();
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState([]);
   const [thumbnail, setThumbnail] = React.useState('');
   const [mainImage, setMainImage] = React.useState('');
-  const [imageList, setImageList] = React.useState(['', '']);
+  const [imageList, setImageList] = React.useState(['']);
   const [videoUrl, setVideoUrl] = React.useState('');
   const [orderNo, setOrderNo] = React.useState('');
   const [setLoading, loading] = React.useState(false);
@@ -79,22 +81,12 @@ const CreateContent = () => {
       });
   };
 
-  const removeImage = (index) => {
-    const imageList2 = imageList;
-    setImageList(imageList2.splice(index, 1));
-  };
+  React.useEffect(() => {
+    console.log('imageListssss', imageList);
+  }, [imageList, type]);
 
-  const incrementImageCount = () => {
-    const imageList2 = imageList;
-    imageList2.push('');
-    setImageList(imageList2);
-  };
-
-  const handleChange = (event) => {
-    console.log('handleChange', event);
-    // this.setState({
-    //   [event.target.name]: event.target.value,
-    // });
+  const handleTypeChange = (event) => {
+    setType(event.target.value);
   };
 
   return (
@@ -124,7 +116,7 @@ const CreateContent = () => {
                     helperText={errors.email}
                     error={errors.email ? true : false}
                     value={title}
-                    onChange={handleChange}
+                    onChange={(event) => setTitle(event.target.value)}
                     fullWidth
                   />
 
@@ -136,7 +128,7 @@ const CreateContent = () => {
                     helperText={errors.subtitle}
                     error={errors.subtitle ? true : false}
                     value={subtitle}
-                    onChange={handleChange}
+                    onChange={(event) => setSubtitle(event.target.value)}
                     fullWidth
                   />
 
@@ -150,7 +142,7 @@ const CreateContent = () => {
                     helperText={errors.description}
                     error={errors.description ? true : false}
                     value={description}
-                    onChange={handleChange}
+                    onChange={(event) => setDescription(event.target.value)}
                     fullWidth
                   />
 
@@ -162,7 +154,7 @@ const CreateContent = () => {
                     variant='outlined'
                     error={errors.orderNo ? true : false}
                     value={orderNo}
-                    onChange={handleChange}
+                    onChange={(event) => setOrderNo(event.target.value)}
                     fullWidth
                   />
 
@@ -188,19 +180,19 @@ const CreateContent = () => {
                         aria-label='contentType'
                         name='contentType'
                         value={type}
-                        onChange={handleChange}>
+                        onChange={handleTypeChange}>
                         <FormControlLabel
-                          value='socialMedia'
+                          value={1}
                           control={<Radio />}
                           label='Social Media'
                         />
                         <FormControlLabel
-                          value='TwoDThreeD'
+                          value={2}
                           control={<Radio />}
                           label='2D & 3D'
                         />
                         <FormControlLabel
-                          value='video'
+                          value={3}
                           control={<Radio />}
                           label='Video'
                         />
@@ -215,7 +207,7 @@ const CreateContent = () => {
                     helperText={errors.videoUrl}
                     error={errors.videoUrl ? true : false}
                     value={videoUrl}
-                    onChange={handleChange}
+                    onChange={(event) => setVideoUrl(event.target.value)}
                     fullWidth
                   />
 
@@ -230,13 +222,40 @@ const CreateContent = () => {
                       padding: '2%',
                       color: 'grey',
                     }}>
-                    <div>Upload images for Social Media</div>
+                    <div style={{ marginBottom: '1%' }}>
+                      Upload Main Image for 2D & 3D or Social Media
+                    </div>
+
+                    <div style={{ marginBottom: '1%' }}>
+                      <Button variant='contained' component='label'>
+                        <input type='file' />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginBottom: '2%',
+                      marginLeft: '2%',
+                      marginTop: '2%',
+                      width: '95%',
+                      border: '1px solid #C4C4C4',
+                      borderRadius: '4px',
+                      padding: '2%',
+                      color: 'grey',
+                    }}>
+                    <div style={{ marginBottom: '1%' }}>
+                      Upload images for Social Media
+                    </div>
                     {imageList.map((item, index) => (
-                      <div>
+                      <div style={{ marginBottom: '1%' }}>
                         <Button variant='contained' component='label'>
                           <input type='file' />
                         </Button>
-                        <Button onClick={() => removeImage(index)}>
+                        <Button
+                          onClick={() => {
+                            setImageList(imageList.splice(index, 1));
+                          }}>
                           <RemoveCircleIcon />
                         </Button>
                       </div>
@@ -244,9 +263,9 @@ const CreateContent = () => {
 
                     <Button
                       onClick={() => {
-                        incrementImageCount();
+                        setImageList([...imageList, '']);
                       }}>
-                      Add more images: <AddCircleIcon />
+                      Add more images <AddCircleIcon />
                     </Button>
                   </div>
 
