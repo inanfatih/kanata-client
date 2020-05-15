@@ -16,10 +16,11 @@ import Videos from './pages/Videos';
 import SocialMedia from './pages/SocialMedia';
 import Content from './pages/Content';
 import MisionVision from './pages/MisionVision';
-import Admin from './pages/Admin';
-import Login from './pages/Login';
-import CreateContent from './pages/CreateContent';
-import EditContent from './pages/EditContent';
+import Admin from './admin/Admin';
+import Login from './admin/Login';
+import CreateContent from './admin/PostContentData';
+import EditContent from './admin/EditContent';
+import ContentContextProvider from './contexts/ContentContext';
 
 axios.defaults.baseURL =
   'https://us-central1-kanata-production.cloudfunctions.net/api';
@@ -42,10 +43,12 @@ function App() {
             <Route exact path='/videos' component={Videos} />
             <Route exact path='/social-media' component={SocialMedia} />
             <Route exact path='/contact' component={Contact} />
-            <Route exact path='/create-content' component={CreateContent} />
             <Route exact path='/edit-content' component={EditContent} />
             <Route exact path='/content/:contentId' component={Content} />
-            <Route path='/' component={Home} />
+            <Route exact path='/' component={Home} />
+            <ContentContextProvider>
+              <Route exact path='/create-content' component={CreateContent} />
+            </ContentContextProvider>
           </Switch>
         </main>
       </Router>

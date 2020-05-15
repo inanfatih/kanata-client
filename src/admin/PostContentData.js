@@ -29,8 +29,21 @@ import { ContentContext } from '../contexts/ContentContext';
 
 const useStyles = makeStyles(styles);
 
-const CreateContent = () => {
-  const { content } = useContext(ContentContext);
+const PostContentData = () => {
+  const {
+    // description,
+    // subtitle,
+    // title,
+    // type,
+    // videoUrl,
+    // thumbnail,
+    // mainImage,
+    // orderNo,
+    // imageList,
+    root,
+  } = useContext(ContentContext);
+
+  console.log('root', root);
 
   const classes = useStyles();
 
@@ -223,12 +236,34 @@ const CreateContent = () => {
                       color: 'grey',
                     }}>
                     <div style={{ marginBottom: '1%' }}>
+                      Upload Thumbnail Image to be used in the home page
+                    </div>
+
+                    <div style={{ marginBottom: '1%' }}>
+                      <Button variant='contained' component='label'>
+                        <input type='file' accept='image/*' />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginBottom: '2%',
+                      marginLeft: '2%',
+                      marginTop: '2%',
+                      width: '95%',
+                      border: '1px solid #C4C4C4',
+                      borderRadius: '4px',
+                      padding: '2%',
+                      color: 'grey',
+                    }}>
+                    <div style={{ marginBottom: '1%' }}>
                       Upload Main Image for 2D & 3D or Social Media
                     </div>
 
                     <div style={{ marginBottom: '1%' }}>
                       <Button variant='contained' component='label'>
-                        <input type='file' />
+                        <input type='file' accept='image/*' />
                       </Button>
                     </div>
                   </div>
@@ -250,7 +285,7 @@ const CreateContent = () => {
                     {imageList.map((item, index) => (
                       <div style={{ marginBottom: '1%' }}>
                         <Button variant='contained' component='label'>
-                          <input type='file' />
+                          <input type='file' accept='image/*' />
                         </Button>
                         <Button
                           onClick={() => {
@@ -293,7 +328,7 @@ const CreateContent = () => {
   );
 };
 
-export default CreateContent;
+export default PostContentData;
 
 /* SAMPLE DATA
 {
