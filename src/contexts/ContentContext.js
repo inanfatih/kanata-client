@@ -12,7 +12,7 @@ const ContentContextProvider = (props) => {
       videoUrl: '',
       thumbnail: '',
       mainImage: '',
-      orderNo: 1,
+      orderNo: 0,
       imageList: [''],
     },
   });

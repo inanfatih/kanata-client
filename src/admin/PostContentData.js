@@ -21,86 +21,113 @@ import FormLabel from '@material-ui/core/FormLabel';
 
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import DeleteIcon from '@material-ui/icons/Delete';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { styles } from '../util/theme';
 import '../App.css';
 import { ContentContext } from '../contexts/ContentContext';
+import IsAuthenticated from '../util/IsAuthenticated';
 
 const useStyles = makeStyles(styles);
 
 const PostContentData = () => {
-  const {
-    // description,
-    // subtitle,
-    // title,
-    // type,
-    // videoUrl,
-    // thumbnail,
-    // mainImage,
-    // orderNo,
-    // imageList,
-    root,
-  } = useContext(ContentContext);
+  IsAuthenticated();
 
-  console.log('root', root);
+  // const {
+  //   // description,
+  //   // subtitle,
+  //   // title,
+  //   // type,
+  //   // videoUrl,
+  //   // thumbnail,
+  //   // mainImage,
+  //   // orderNo,
+  //   // imageList,
+  //   root,
+  // } = useContext(ContentContext);
+
+  // console.log('root', root);
 
   const classes = useStyles();
 
   const [title, setTitle] = React.useState('');
   const [subtitle, setSubtitle] = React.useState('');
-  const [type, setType] = React.useState();
+  const [type, setType] = React.useState(1);
   const [description, setDescription] = React.useState('');
-  const [errors, setErrors] = React.useState([]);
+  const [errors, setErrors] = React.useState({});
   const [thumbnail, setThumbnail] = React.useState('');
   const [mainImage, setMainImage] = React.useState('');
   const [imageList, setImageList] = React.useState(['']);
   const [videoUrl, setVideoUrl] = React.useState('');
-  const [orderNo, setOrderNo] = React.useState('');
-  const [setLoading, loading] = React.useState(false);
+  const [orderNo, setOrderNo] = React.useState(0);
+  const [contentId, setContentId] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [isSuccessfull, setIsSuccessfull] = React.useState(false);
+  const [isFailed, setIsFailed] = React.useState(false);
+
+  let contentData = {
+    title: title,
+    subtitle: subtitle,
+    type: type,
+    description: description,
+    thumbnail: thumbnail,
+    mainImage: mainImage,
+    imageList: imageList,
+    videoUrl: videoUrl,
+    orderNo: orderNo,
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    let contentData = {
-      title: title,
-      subtitle: subtitle,
-      type: type,
-      description: description,
-      thumbnail: thumbnail,
-      mainImage: mainImage,
-      imageList: imageList,
-      videoUrl: videoUrl,
-      orderNo: orderNo,
-    };
+
     console.log('handleSubmit', event);
 
     setLoading(true);
-
-    axios
-      .post('/content', contentData)
-      .then((res) => {
-        // console.log(res.data);
-        localStorage.setItem(
-          'KanataProductionToken',
-          `Bearer ${res.data.token}`,
-        );
-        setLoading(false);
-        //TODO:  CLEAR FORM HERE
-      })
-      .catch((err) => {
-        // this.setState({
-        //   errors: err.response.data,
-        // });
-      });
+    if (IsAuthenticated()) {
+      axios
+        .post('/content', contentData)
+        .then((res) => {
+          console.log(res.data);
+          console.log('res', res);
+          console.log('res.data', res.data);
+          setContentId(res.data.content.contentId);
+        })
+        .then(() => {
+          //TODO: Photos will be uploaded here
+        })
+        .then(() => {
+          //Empty the form
+          setTitle('');
+          setSubtitle('');
+          setType(1);
+          setDescription('');
+          setThumbnail('');
+          setMainImage('');
+          setImageList(['']);
+          setVideoUrl('');
+          setOrderNo(0);
+          setErrors({});
+          setIsSuccessfull(true);
+        })
+        .catch((err) => {
+          setLoading(false);
+          setErrors(err);
+          console.log('err', err);
+          setIsSuccessfull(false);
+          setIsFailed(true);
+        });
+    } else {
+      //TODO: display that token has expired. Login again
+    }
   };
-
   React.useEffect(() => {
-    console.log('imageListssss', imageList);
-  }, [imageList, type]);
-
-  const handleTypeChange = (event) => {
-    setType(event.target.value);
-  };
+    console.log('contentData', contentData);
+  }, [imageList, type, contentData, loading]);
 
   return (
     <div>
@@ -126,10 +153,11 @@ const PostContentData = () => {
                     name='title'
                     label='Title'
                     variant='outlined'
-                    helperText={errors.email}
-                    error={errors.email ? true : false}
+                    helperText={errors.title}
+                    error={errors.title ? true : false}
                     value={title}
-                    onChange={(event) => setTitle(event.target.value)}
+                    required
+                    onInput={(event) => setTitle(event.target.value)}
                     fullWidth
                   />
 
@@ -138,6 +166,7 @@ const PostContentData = () => {
                     name='subtitle'
                     label='Subtitle'
                     variant='outlined'
+                    required
                     helperText={errors.subtitle}
                     error={errors.subtitle ? true : false}
                     value={subtitle}
@@ -150,6 +179,7 @@ const PostContentData = () => {
                     name='description'
                     label='Description'
                     variant='outlined'
+                    required
                     multiline
                     rows={4}
                     helperText={errors.description}
@@ -164,10 +194,12 @@ const PostContentData = () => {
                     name='orderNo'
                     label='Displaying Priority'
                     type='number'
+                    required
                     variant='outlined'
                     error={errors.orderNo ? true : false}
+                    helperText="Content will be sorted by the Displaying priority. Higher number means higher priority. When the priority matches another content's priority, the content created later will have higher priority."
                     value={orderNo}
-                    onChange={(event) => setOrderNo(event.target.value)}
+                    onChange={(event) => setOrderNo(Number(event.target.value))}
                     fullWidth
                   />
 
@@ -193,7 +225,9 @@ const PostContentData = () => {
                         aria-label='contentType'
                         name='contentType'
                         value={type}
-                        onChange={handleTypeChange}>
+                        onChange={(event) =>
+                          setType(Number(event.target.value))
+                        }>
                         <FormControlLabel
                           value={1}
                           control={<Radio />}
@@ -212,24 +246,24 @@ const PostContentData = () => {
                       </RadioGroup>
                     </FormControl>
                   </div>
-                  <TextField
-                    id='videoUrl'
-                    name='videoUrl'
-                    label='Video Url'
-                    variant='outlined'
-                    helperText={errors.videoUrl}
-                    error={errors.videoUrl ? true : false}
-                    value={videoUrl}
-                    onChange={(event) => setVideoUrl(event.target.value)}
-                    fullWidth
-                  />
+                  {type === 3 && (
+                    <TextField
+                      id='videoUrl'
+                      name='videoUrl'
+                      label='Video Url'
+                      variant='outlined'
+                      helperText={errors.videoUrl}
+                      error={errors.videoUrl ? true : false}
+                      value={videoUrl}
+                      onChange={(event) => setVideoUrl(event.target.value)}
+                      fullWidth
+                    />
+                  )}
 
                   <div
                     style={{
-                      marginBottom: '2%',
-                      marginLeft: '2%',
-                      marginTop: '2%',
-                      width: '95%',
+                      margin: '3% 2%',
+                      width: '91%',
                       border: '1px solid #C4C4C4',
                       borderRadius: '4px',
                       padding: '2%',
@@ -241,68 +275,76 @@ const PostContentData = () => {
 
                     <div style={{ marginBottom: '1%' }}>
                       <Button variant='contained' component='label'>
-                        <input type='file' accept='image/*' />
+                        <input
+                          type='file'
+                          accept='image/*'
+                          // required
+                        />
                       </Button>
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      marginBottom: '2%',
-                      marginLeft: '2%',
-                      marginTop: '2%',
-                      width: '95%',
-                      border: '1px solid #C4C4C4',
-                      borderRadius: '4px',
-                      padding: '2%',
-                      color: 'grey',
-                    }}>
-                    <div style={{ marginBottom: '1%' }}>
-                      Upload Main Image for 2D & 3D or Social Media
-                    </div>
+                  {type !== 3 && (
+                    <div
+                      style={{
+                        margin: '3% 2%',
+                        width: '91%',
+                        border: '1px solid #C4C4C4',
+                        borderRadius: '4px',
+                        padding: '2%',
+                        color: 'grey',
+                      }}>
+                      <div style={{ marginBottom: '1%' }}>
+                        Upload Main Image (The image to be displayed on the top
+                        in the content page) for 2D & 3D or Social Media
+                      </div>
 
-                    <div style={{ marginBottom: '1%' }}>
-                      <Button variant='contained' component='label'>
-                        <input type='file' accept='image/*' />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginBottom: '2%',
-                      marginLeft: '2%',
-                      marginTop: '2%',
-                      width: '95%',
-                      border: '1px solid #C4C4C4',
-                      borderRadius: '4px',
-                      padding: '2%',
-                      color: 'grey',
-                    }}>
-                    <div style={{ marginBottom: '1%' }}>
-                      Upload images for Social Media
-                    </div>
-                    {imageList.map((item, index) => (
                       <div style={{ marginBottom: '1%' }}>
                         <Button variant='contained' component='label'>
                           <input type='file' accept='image/*' />
                         </Button>
-                        <Button
-                          onClick={() => {
-                            setImageList(imageList.splice(index, 1));
-                          }}>
-                          <RemoveCircleIcon />
-                        </Button>
                       </div>
-                    ))}
+                    </div>
+                  )}
 
-                    <Button
-                      onClick={() => {
-                        setImageList([...imageList, '']);
+                  {type === 1 && (
+                    <div
+                      style={{
+                        margin: '3% 2%',
+                        width: '91%',
+                        border: '1px solid #C4C4C4',
+                        borderRadius: '4px',
+                        padding: '2%',
+                        color: 'grey',
                       }}>
-                      Add more images <AddCircleIcon />
-                    </Button>
-                  </div>
+                      <div style={{ marginBottom: '1%' }}>
+                        Upload additional images for Social Media (These will be
+                        displayed after the main image)
+                      </div>
+                      {imageList.map((item, index) => (
+                        <div style={{ marginBottom: '1%' }} key={index}>
+                          <Button variant='contained' component='label'>
+                            <input type='file' accept='image/*' />
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              console.log('imageList Before', imageList);
+                              setImageList(imageList.splice(index, 1));
+                              console.log('imageList After', imageList);
+                            }}>
+                            <RemoveCircleIcon />
+                          </Button>
+                        </div>
+                      ))}
+
+                      <Button
+                        onClick={() => {
+                          setImageList([...imageList, '']);
+                        }}>
+                        Add more images <AddCircleIcon />
+                      </Button>
+                    </div>
+                  )}
 
                   <Button
                     size='large'
@@ -324,29 +366,41 @@ const PostContentData = () => {
           </Paper>
         </div>
       </Grow>
+
+      {(loading || isSuccessfull) && (
+        <Dialog
+          open={loading || isSuccessfull}
+          keepMounted
+          onClose={() => {
+            setIsSuccessfull(false);
+            setLoading(false);
+          }}
+          aria-labelledby='alert-dialog-slide-title'
+          aria-describedby='alert-dialog-slide-description'>
+          <DialogTitle id='alert-dialog-slide-title'>
+            {!isSuccessfull ? 'Creating the content' : 'Successful'}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id='alert-dialog-slide-description'>
+              {!isSuccessfull
+                ? 'Please Wait'
+                : `Good job!!! Content is created with Content ID:  ${contentId}`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setIsSuccessfull(false);
+                setLoading(false);
+              }}
+              color='primary'>
+              Dismiss
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </div>
   );
 };
 
 export default PostContentData;
-
-/* SAMPLE DATA
-{
-    "description": "Coşar Producer: Murat Erdağı 3D Supervisor: Berkay Bentürküm",
-    "subtitle": " star subtitle",
-    "title": "Dream star",
-    "type": 2,
-    "videoUrl": "https://vimeo.com/383209692",
-    "thumbnail": "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/1.png?alt=media",
-    "mainImage": "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/6.png?alt=media",
-    "orderNo": 1,
-    "imageList": [
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/5.png?alt=media",
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/6.png?alt=media",
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/7.png?alt=media",
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/8.png?alt=media",
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/9.png?alt=media",
-        "https://firebasestorage.googleapis.com/v0/b/kanata-production.appspot.com/o/4.png?alt=media"
-    ]
-}
-*/

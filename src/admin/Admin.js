@@ -13,11 +13,15 @@ import kpLogo from '../images/kpLogo.png';
 //Pages
 import { styles } from '../util/theme';
 import '../App.css';
+import IsAuthenticated from '../util/IsAuthenticated';
 
 const useStyles = makeStyles(styles);
 
 export default function Admin() {
   const classes = useStyles();
+  
+  IsAuthenticated();
+
   return (
     <div className={classes.contactContentBox}>
       <Paper className={classes.contactContent} elevation={10}>
