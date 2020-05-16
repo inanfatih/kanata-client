@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import axios from 'axios';
 import ReactPlayer from 'react-player';
 
@@ -61,10 +63,10 @@ export default function Content(props) {
                   className='react-player'
                 />
               </div>
-              <CardMedia
+              {/* <CardMedia
                 className={classes.cardMedia}
                 title={contentPage.title}
-              />
+              /> */}
               <CardContent>
                 <Typography gutterBottom variant='h3'>
                   {contentPage.title}
@@ -78,12 +80,11 @@ export default function Content(props) {
               </CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size='small' color='primary'>
-                Share
-              </Button>
-              <Button size='small' color='primary'>
-                Learn More
-              </Button>
+              <Link to='/contact'>
+                <Button size='small' color='primary'>
+                  Learn More
+                </Button>
+              </Link>
             </CardActions>
           </Card>
         </Paper>
@@ -119,12 +120,11 @@ export default function Content(props) {
               </CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size='small' color='primary'>
-                Share
-              </Button>
-              <Button size='small' color='primary'>
-                Learn More
-              </Button>
+              <Link to='/contact'>
+                <Button size='small' color='primary'>
+                  Learn More
+                </Button>
+              </Link>
             </CardActions>
           </Card>
         </Paper>
@@ -159,17 +159,16 @@ export default function Content(props) {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size='small' color='primary'>
-                  Share
-                </Button>
-                <Button size='small' color='primary'>
-                  Learn More
-                </Button>
+                <Link to='/contact'>
+                  <Button size='small' color='primary'>
+                    Learn More
+                  </Button>
+                </Link>
               </CardActions>
             </CardActionArea>
           </Card>
-          {images.map((imageLink) => (
-            <Card className={classes.mediaRoot} elevation={5}>
+          {images.map((imageLink, index) => (
+            <Card key={index} className={classes.mediaRoot} elevation={5}>
               <CardContent>
                 <CardMedia
                   component='img'

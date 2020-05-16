@@ -77,7 +77,7 @@ const PostContentData = () => {
     description: description,
     thumbnail: thumbnail,
     mainImage: mainImage,
-    imageList: imageList,
+    imageList: [],
     videoUrl: videoUrl,
     orderNo: orderNo,
   };
@@ -89,38 +89,167 @@ const PostContentData = () => {
 
     setLoading(true);
     if (IsAuthenticated()) {
-      axios
-        .post('/content', contentData)
-        .then((res) => {
-          console.log(res.data);
-          console.log('res', res);
-          console.log('res.data', res.data);
-          setContentId(res.data.content.contentId);
-        })
-        .then(() => {
-          //TODO: Photos will be uploaded here
-        })
-        .then(() => {
-          //Empty the form
-          setTitle('');
-          setSubtitle('');
-          setType(1);
-          setDescription('');
-          setThumbnail('');
-          setMainImage('');
-          setImageList(['']);
-          setVideoUrl('');
-          setOrderNo(0);
-          setErrors({});
-          setIsSuccessfull(true);
-        })
-        .catch((err) => {
-          setLoading(false);
-          setErrors(err);
-          console.log('err', err);
-          setIsSuccessfull(false);
-          setIsFailed(true);
-        });
+      if (type === 1) {
+        axios
+          .post('/content', contentData)
+          .then((res) => {
+            console.log(res.data);
+            console.log('res', res);
+            console.log('res.data', res.data);
+            setContentId(res.data.content.contentId);
+            return res.data.content.contentId;
+          })
+          .then((contentIdReturned) => {
+            //Upload thumbnail
+            axios
+              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+              .then(() => {
+                console.log('thumbnail uploaded successfully');
+              })
+              .catch((err) => console.log('error', err));
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
+            //upload mainImage
+            axios
+              .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
+              .then(() => {
+                console.log('mainImage uploaded successfully');
+              })
+              .catch((err) => console.log('err', err));
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
+            imageListFormDataArray.forEach((formData, index) => {
+              axios
+                .post(
+                  `/image/${contentIdReturned}/imageList/${index}`,
+                  formData,
+                )
+                .then(() => {
+                  console.log(
+                    'imagelist item at index ' +
+                      index +
+                      ' uploaded successfully',
+                  );
+                })
+                .catch((err) => console.log(err));
+            });
+          })
+          .then(() => {
+            //Empty the form
+            // setTitle('');
+            // setSubtitle('');
+            // setType(1);
+            // setDescription('');
+            // setThumbnail('');
+            // setMainImage('');
+            // setImageList(['']);
+            // setVideoUrl('');
+            // setOrderNo(0);
+            setErrors({});
+            setIsSuccessfull(true);
+          })
+          .catch((err) => {
+            setLoading(false);
+            setErrors(err);
+            console.log('err', err);
+            setIsSuccessfull(false);
+            setIsFailed(true);
+          });
+      } else if (type === 2) {
+        axios
+          .post('/content', contentData)
+          .then((res) => {
+            console.log(res.data);
+            console.log('res', res);
+            console.log('res.data', res.data);
+            setContentId(res.data.content.contentId);
+            return res.data.content.contentId;
+          })
+          .then((contentIdReturned) => {
+            //Upload thumbnail
+            axios
+              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+              .then(() => {
+                console.log('thumbnail uploaded successfully');
+              })
+              .catch((err) => console.log('erraa', err));
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
+            //upload mainImage
+            axios
+              .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
+              .then(() => {
+                console.log('mainImage uploaded successfully');
+              })
+              .catch((err) => console.log('err', err));
+            return contentIdReturned;
+          })
+          .then(() => {
+            //Empty the form
+            // setTitle('');
+            // setSubtitle('');
+            // setType(1);
+            // setDescription('');
+            // setThumbnail('');
+            // setMainImage('');
+            // setImageList(['']);
+            // setVideoUrl('');
+            // setOrderNo(0);
+            setErrors({});
+            setIsSuccessfull(true);
+          })
+          .catch((err) => {
+            setLoading(false);
+            setErrors(err);
+            console.log('err', err);
+            setIsSuccessfull(false);
+            setIsFailed(true);
+          });
+      } else if (type === 3) {
+        axios
+          .post('/content', contentData)
+          .then((res) => {
+            console.log(res.data);
+            console.log('res', res);
+            console.log('res.data', res.data);
+            setContentId(res.data.content.contentId);
+            return res.data.content.contentId;
+          })
+          .then((contentIdReturned) => {
+            //Upload thumbnail
+            axios
+              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+              .then(() => {
+                console.log('thumbnail uploaded successfully');
+              })
+              .catch((err) => console.log('erraa', err));
+            return contentIdReturned;
+          })
+          .then(() => {
+            //Empty the form
+            // setTitle('');
+            // setSubtitle('');
+            // setType(1);
+            // setDescription('');
+            // setThumbnail('');
+            // setMainImage('');
+            // setImageList(['']);
+            // setVideoUrl('');
+            // setOrderNo(0);
+            setErrors({});
+            setIsSuccessfull(true);
+          })
+          .catch((err) => {
+            setLoading(false);
+            setErrors(err);
+            console.log('err', err);
+            setIsSuccessfull(false);
+            setIsFailed(true);
+          });
+      }
     } else {
       //TODO: display that token has expired. Login again
     }
@@ -128,6 +257,29 @@ const PostContentData = () => {
   React.useEffect(() => {
     console.log('contentData', contentData);
   }, [imageList, type, contentData, loading]);
+
+  const thumbnailFormData = new FormData();
+
+  const uploadThumbnail = (event) => {
+    const image = event.target.files[0];
+    thumbnailFormData.append('image', image, image.name);
+  };
+
+  const mainImageFormData = new FormData();
+
+  const uploadMainImage = (event) => {
+    const image = event.target.files[0];
+    mainImageFormData.append('image', image, image.name);
+  };
+
+  const imageListFormData = new FormData();
+  const imageListFormDataArray = [];
+
+  const uploadImageList = (event, index) => {
+    const image = event.target.files[0];
+    imageListFormData.append('image', image, image.name);
+    imageListFormDataArray.push(imageListFormData);
+  };
 
   return (
     <div>
@@ -257,6 +409,7 @@ const PostContentData = () => {
                       value={videoUrl}
                       onChange={(event) => setVideoUrl(event.target.value)}
                       fullWidth
+                      required
                     />
                   )}
 
@@ -278,7 +431,8 @@ const PostContentData = () => {
                         <input
                           type='file'
                           accept='image/*'
-                          // required
+                          required
+                          onChange={uploadThumbnail}
                         />
                       </Button>
                     </div>
@@ -301,7 +455,12 @@ const PostContentData = () => {
 
                       <div style={{ marginBottom: '1%' }}>
                         <Button variant='contained' component='label'>
-                          <input type='file' accept='image/*' />
+                          <input
+                            type='file'
+                            accept='image/*'
+                            required
+                            onChange={uploadMainImage}
+                          />
                         </Button>
                       </div>
                     </div>
@@ -324,7 +483,13 @@ const PostContentData = () => {
                       {imageList.map((item, index) => (
                         <div style={{ marginBottom: '1%' }} key={index}>
                           <Button variant='contained' component='label'>
-                            <input type='file' accept='image/*' />
+                            <input
+                              type='file'
+                              accept='image/*'
+                              onChange={(event, index) => {
+                                uploadImageList(event, index);
+                              }}
+                            />
                           </Button>
                           <Button
                             onClick={() => {

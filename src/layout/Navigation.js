@@ -27,6 +27,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 import MissionIcon from '@material-ui/icons/TrackChanges';
 
@@ -151,7 +152,15 @@ function Navigation(props) {
           <i className='fab fa-facebook-square fa-2x'></i>
         </a>
       </div>
-      <br />
+      <Link to='/login'>
+        <Button
+          style={{
+            width: '100%',
+            height: '30px',
+            marginTop: '20px',
+          }}
+        />
+      </Link>
     </div>
   );
 
