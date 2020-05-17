@@ -19,7 +19,7 @@ const useStyles = makeStyles(styles);
 
 export default function Admin() {
   const classes = useStyles();
-  
+
   IsAuthenticated();
 
   return (

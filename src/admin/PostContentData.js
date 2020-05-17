@@ -82,7 +82,7 @@ const PostContentData = () => {
     orderNo: orderNo,
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     console.log('handleSubmit', event);
@@ -90,7 +90,7 @@ const PostContentData = () => {
     setLoading(true);
     if (IsAuthenticated()) {
       if (type === 1) {
-        axios
+        await axios
           .post('/content', contentData)
           .then((res) => {
             console.log(res.data);
@@ -99,9 +99,9 @@ const PostContentData = () => {
             setContentId(res.data.content.contentId);
             return res.data.content.contentId;
           })
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             //Upload thumbnail
-            axios
+            await axios
               .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
               .then(() => {
                 console.log('thumbnail uploaded successfully');
@@ -109,9 +109,9 @@ const PostContentData = () => {
               .catch((err) => console.log('error', err));
             return contentIdReturned;
           })
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             //upload mainImage
-            axios
+            await axios
               .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
               .then(() => {
                 console.log('mainImage uploaded successfully');
@@ -119,9 +119,9 @@ const PostContentData = () => {
               .catch((err) => console.log('err', err));
             return contentIdReturned;
           })
-          .then((contentIdReturned) => {
-            imageListFormDataArray.forEach((formData, index) => {
-              axios
+          .then(async (contentIdReturned) => {
+            imageListFormDataArray.forEach(async (formData, index) => {
+              await axios
                 .post(
                   `/image/${contentIdReturned}/imageList/${index}`,
                   formData,
@@ -158,7 +158,7 @@ const PostContentData = () => {
             setIsFailed(true);
           });
       } else if (type === 2) {
-        axios
+        await axios
           .post('/content', contentData)
           .then((res) => {
             console.log(res.data);
@@ -167,19 +167,19 @@ const PostContentData = () => {
             setContentId(res.data.content.contentId);
             return res.data.content.contentId;
           })
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             //Upload thumbnail
-            axios
-              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-              .then(() => {
-                console.log('thumbnail uploaded successfully');
-              })
-              .catch((err) => console.log('erraa', err));
+           await axios
+             .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+             .then(() => {
+               console.log('thumbnail uploaded successfully');
+             })
+             .catch((err) => console.log('erraa', err));
             return contentIdReturned;
           })
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             //upload mainImage
-            axios
+            await axios
               .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
               .then(() => {
                 console.log('mainImage uploaded successfully');
@@ -209,7 +209,7 @@ const PostContentData = () => {
             setIsFailed(true);
           });
       } else if (type === 3) {
-        axios
+        await axios
           .post('/content', contentData)
           .then((res) => {
             console.log(res.data);
@@ -218,14 +218,14 @@ const PostContentData = () => {
             setContentId(res.data.content.contentId);
             return res.data.content.contentId;
           })
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             //Upload thumbnail
-            axios
-              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-              .then(() => {
-                console.log('thumbnail uploaded successfully');
-              })
-              .catch((err) => console.log('erraa', err));
+           await axios
+             .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+             .then(() => {
+               console.log('thumbnail uploaded successfully');
+             })
+             .catch((err) => console.log('erraa', err));
             return contentIdReturned;
           })
           .then(() => {
@@ -344,7 +344,7 @@ const PostContentData = () => {
                   <TextField
                     id='orderNo'
                     name='orderNo'
-                    label='Displaying Priority'
+                    label='Display Priority'
                     type='number'
                     required
                     variant='outlined'
