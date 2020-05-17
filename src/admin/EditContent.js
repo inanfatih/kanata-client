@@ -61,20 +61,20 @@ export default function EditContent() {
       columns={columns}
       data={state}
       editable={{
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve) => {
-            IsAuthenticated();
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data[data.indexOf(oldData)] = newData;
-                  return { ...prevState, data };
-                });
-              }
-            }, 600);
-          }),
+        // onRowUpdate: (newData, oldData) =>
+        //   new Promise((resolve) => {
+        //     IsAuthenticated();
+        //     setTimeout(() => {
+        //       resolve();
+        //       if (oldData) {
+        //         setState((prevState) => {
+        //           const data = [...prevState.data];
+        //           data[data.indexOf(oldData)] = newData;
+        //           return { ...prevState, data };
+        //         });
+        //       }
+        //     }, 600);
+        //   }),
         onRowDelete: async (oldData) => {
           IsAuthenticated();
           const contentId = oldData.contentId;

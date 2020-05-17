@@ -84,7 +84,6 @@ const PostContentData = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     console.log('handleSubmit', event);
 
     setLoading(true);
@@ -106,7 +105,14 @@ const PostContentData = () => {
               .then(() => {
                 console.log('thumbnail uploaded successfully');
               })
-              .catch((err) => console.log('error', err));
+              .catch(async (err) => {
+                setIsFailed(true);
+
+                await axios.delete(`/content/${contentId}`).catch((err) => {
+                  console.log(err);
+                });
+                console.log('error', err);
+              });
             return contentIdReturned;
           })
           .then(async (contentIdReturned) => {
@@ -116,7 +122,14 @@ const PostContentData = () => {
               .then(() => {
                 console.log('mainImage uploaded successfully');
               })
-              .catch((err) => console.log('err', err));
+              .catch(async (err) => {
+                setIsFailed(true);
+
+                await axios.delete(`/content/${contentId}`).catch((err) => {
+                  console.log(err);
+                });
+                console.log('error', err);
+              });
             return contentIdReturned;
           })
           .then(async (contentIdReturned) => {
@@ -132,25 +145,34 @@ const PostContentData = () => {
                       index +
                       ' uploaded successfully',
                   );
+                  setIsSuccessfull(true);
                 })
-                .catch((err) => console.log(err));
+                .catch(async (err) => {
+                  setIsFailed(true);
+
+                  await axios.delete(`/content/${contentId}`).catch((err) => {
+                    console.log(err);
+                  });
+                  console.log('error', err);
+                });
             });
           })
-          .then(() => {
-            //Empty the form
-            // setTitle('');
-            // setSubtitle('');
-            // setType(1);
-            // setDescription('');
-            // setThumbnail('');
-            // setMainImage('');
-            // setImageList(['']);
-            // setVideoUrl('');
-            // setOrderNo(0);
-            setErrors({});
-            setIsSuccessfull(true);
-          })
+          // .then(() => {
+          //   //Empty the form
+          //   setTitle('');
+          //   setSubtitle('');
+          //   setType(1);
+          //   setDescription('');
+          //   setThumbnail('');
+          //   setMainImage('');
+          //   setImageList(['']);
+          //   setVideoUrl('');
+          //   setOrderNo(0);
+          //   setErrors({});
+          // })
           .catch((err) => {
+            console.log('contentId', contentId);
+
             setLoading(false);
             setErrors(err);
             console.log('err', err);
@@ -169,12 +191,19 @@ const PostContentData = () => {
           })
           .then(async (contentIdReturned) => {
             //Upload thumbnail
-           await axios
-             .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-             .then(() => {
-               console.log('thumbnail uploaded successfully');
-             })
-             .catch((err) => console.log('erraa', err));
+            await axios
+              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+              .then(() => {
+                console.log('thumbnail uploaded successfully');
+              })
+              .catch(async (err) => {
+                setIsFailed(true);
+
+                await axios.delete(`/content/${contentId}`).catch((err) => {
+                  console.log(err);
+                });
+                console.log('error', err);
+              });
             return contentIdReturned;
           })
           .then(async (contentIdReturned) => {
@@ -183,24 +212,32 @@ const PostContentData = () => {
               .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
               .then(() => {
                 console.log('mainImage uploaded successfully');
+                setIsSuccessfull(true);
               })
-              .catch((err) => console.log('err', err));
+              .catch(async (err) => {
+                setIsFailed(true);
+
+                await axios.delete(`/content/${contentId}`).catch((err) => {
+                  console.log(err);
+                });
+                console.log('error', err);
+              });
             return contentIdReturned;
           })
-          .then(() => {
-            //Empty the form
-            // setTitle('');
-            // setSubtitle('');
-            // setType(1);
-            // setDescription('');
-            // setThumbnail('');
-            // setMainImage('');
-            // setImageList(['']);
-            // setVideoUrl('');
-            // setOrderNo(0);
-            setErrors({});
-            setIsSuccessfull(true);
-          })
+          // .then(() => {
+          //Empty the form
+          // setTitle('');
+          // setSubtitle('');
+          // setType(1);
+          // setDescription('');
+          // setThumbnail('');
+          // setMainImage('');
+          // setImageList(['']);
+          // setVideoUrl('');
+          // setOrderNo(0);
+          // setErrors({});
+          // setIsSuccessfull(true);
+          // })
           .catch((err) => {
             setLoading(false);
             setErrors(err);
@@ -220,28 +257,36 @@ const PostContentData = () => {
           })
           .then(async (contentIdReturned) => {
             //Upload thumbnail
-           await axios
-             .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-             .then(() => {
-               console.log('thumbnail uploaded successfully');
-             })
-             .catch((err) => console.log('erraa', err));
+            await axios
+              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
+              .then(() => {
+                setIsSuccessfull(true);
+                console.log('thumbnail uploaded successfully');
+              })
+              .catch(async (err) => {
+                setIsFailed(true);
+
+                await axios.delete(`/content/${contentId}`).catch((err) => {
+                  console.log(err);
+                });
+                console.log('error', err);
+              });
             return contentIdReturned;
           })
-          .then(() => {
-            //Empty the form
-            // setTitle('');
-            // setSubtitle('');
-            // setType(1);
-            // setDescription('');
-            // setThumbnail('');
-            // setMainImage('');
-            // setImageList(['']);
-            // setVideoUrl('');
-            // setOrderNo(0);
-            setErrors({});
-            setIsSuccessfull(true);
-          })
+          // .then(() => {
+          //Empty the form
+          // setTitle('');
+          // setSubtitle('');
+          // setType(1);
+          // setDescription('');
+          // setThumbnail('');
+          // setMainImage('');
+          // setImageList(['']);
+          // setVideoUrl('');
+          // setOrderNo(0);
+          // setErrors({});
+          // setIsSuccessfull(true);
+          // })
           .catch((err) => {
             setLoading(false);
             setErrors(err);
@@ -262,14 +307,18 @@ const PostContentData = () => {
 
   const uploadThumbnail = (event) => {
     const image = event.target.files[0];
-    thumbnailFormData.append('image', image, image.name);
+    if (image) {
+      thumbnailFormData.append('image', image, image.name);
+    }
   };
 
   const mainImageFormData = new FormData();
 
   const uploadMainImage = (event) => {
     const image = event.target.files[0];
-    mainImageFormData.append('image', image, image.name);
+    if (image) {
+      mainImageFormData.append('image', image, image.name);
+    }
   };
 
   const imageListFormData = new FormData();
@@ -277,8 +326,10 @@ const PostContentData = () => {
 
   const uploadImageList = (event, index) => {
     const image = event.target.files[0];
-    imageListFormData.append('image', image, image.name);
-    imageListFormDataArray.push(imageListFormData);
+    if (image) {
+      imageListFormData.append('image', image, image.name);
+      imageListFormDataArray.push(imageListFormData);
+    }
   };
 
   return (
@@ -488,6 +539,7 @@ const PostContentData = () => {
                               accept='image/*'
                               onChange={(event, index) => {
                                 uploadImageList(event, index);
+                                console.log('uploadImageList', index);
                               }}
                             />
                           </Button>
@@ -532,23 +584,30 @@ const PostContentData = () => {
         </div>
       </Grow>
 
-      {(loading || isSuccessfull) && (
+      {(loading || isSuccessfull || isFailed) && (
         <Dialog
-          open={loading || isSuccessfull}
+          open={loading || isSuccessfull || isFailed}
           keepMounted
           onClose={() => {
             setIsSuccessfull(false);
+            setIsFailed(false);
             setLoading(false);
           }}
           aria-labelledby='alert-dialog-slide-title'
           aria-describedby='alert-dialog-slide-description'>
           <DialogTitle id='alert-dialog-slide-title'>
-            {!isSuccessfull ? 'Creating the content' : 'Successful'}
+            {!isSuccessfull && !isFailed
+              ? 'Creating the content'
+              : isFailed
+              ? 'Failed'
+              : ' Successful'}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id='alert-dialog-slide-description'>
-              {!isSuccessfull
+              {!isSuccessfull && !isFailed
                 ? 'Please Wait'
+                : isFailed
+                ? `Failed - Try again ${contentId}`
                 : `Good job!!! Content is created with Content ID:  ${contentId}`}
             </DialogContentText>
           </DialogContent>
@@ -557,6 +616,7 @@ const PostContentData = () => {
               onClick={() => {
                 setIsSuccessfull(false);
                 setLoading(false);
+                setIsFailed(false);
               }}
               color='primary'>
               Dismiss
