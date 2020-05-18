@@ -19,7 +19,7 @@ import Content from './pages/Content';
 import MisionVision from './pages/MisionVision';
 import Admin from './admin/Admin';
 import Login from './admin/Login';
-import CreateContent from './admin/PostContentData';
+import CreateContent from './admin/CreateContent';
 import EditContent from './admin/EditContent';
 import ContentContextProvider from './contexts/ContentContext';
 

@@ -32,10 +32,13 @@ import { styles } from '../util/theme';
 import '../App.css';
 import { ContentContext } from '../contexts/ContentContext';
 import IsAuthenticated from '../util/IsAuthenticated';
-
+import UploadThumbnail from '../util/UploadThumbnail';
+import UploadMainImage from '../util/UploadMainImage';
+import UploadImageList from '../util/UploadImageList';
+import DeleteContentData from '../util/DeleteContentData';
 const useStyles = makeStyles(styles);
 
-const PostContentData = () => {
+const CreateContent = () => {
   IsAuthenticated();
 
   // const {
@@ -60,8 +63,6 @@ const PostContentData = () => {
   const [type, setType] = React.useState(1);
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState({});
-  const [thumbnail, setThumbnail] = React.useState('');
-  const [mainImage, setMainImage] = React.useState('');
   const [imageList, setImageList] = React.useState(['']);
   const [videoUrl, setVideoUrl] = React.useState('');
   const [orderNo, setOrderNo] = React.useState(0);
@@ -69,239 +70,24 @@ const PostContentData = () => {
   const [loading, setLoading] = React.useState(false);
   const [isSuccessfull, setIsSuccessfull] = React.useState(false);
   const [isFailed, setIsFailed] = React.useState(false);
+  const [isThumbnailUploaded, setIsThumbnailUploaded] = React.useState();
+  const [isMainImageUploaded, setIsMainImageUploaded] = React.useState();
+  const [isImageListUploaded, setIsImageListUploaded] = React.useState();
+  const [imageListFormDataArray, setImageListFormDataArray] = React.useState(
+    [],
+  );
 
   let contentData = {
     title: title,
     subtitle: subtitle,
     type: type,
     description: description,
-    thumbnail: thumbnail,
-    mainImage: mainImage,
+    thumbnail: '',
+    mainImage: '',
     imageList: [],
     videoUrl: videoUrl,
     orderNo: orderNo,
   };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log('handleSubmit', event);
-
-    setLoading(true);
-    if (IsAuthenticated()) {
-      if (type === 1) {
-        await axios
-          .post('/content', contentData)
-          .then((res) => {
-            console.log(res.data);
-            console.log('res', res);
-            console.log('res.data', res.data);
-            setContentId(res.data.content.contentId);
-            return res.data.content.contentId;
-          })
-          .then(async (contentIdReturned) => {
-            //Upload thumbnail
-            await axios
-              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-              .then(() => {
-                console.log('thumbnail uploaded successfully');
-              })
-              .catch(async (err) => {
-                setIsFailed(true);
-
-                await axios.delete(`/content/${contentId}`).catch((err) => {
-                  console.log(err);
-                });
-                console.log('error', err);
-              });
-            return contentIdReturned;
-          })
-          .then(async (contentIdReturned) => {
-            //upload mainImage
-            await axios
-              .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
-              .then(() => {
-                console.log('mainImage uploaded successfully');
-              })
-              .catch(async (err) => {
-                setIsFailed(true);
-
-                await axios.delete(`/content/${contentId}`).catch((err) => {
-                  console.log(err);
-                });
-                console.log('error', err);
-              });
-            return contentIdReturned;
-          })
-          .then(async (contentIdReturned) => {
-            imageListFormDataArray.forEach(async (formData, index) => {
-              await axios
-                .post(
-                  `/image/${contentIdReturned}/imageList/${index}`,
-                  formData,
-                )
-                .then(() => {
-                  console.log(
-                    'imagelist item at index ' +
-                      index +
-                      ' uploaded successfully',
-                  );
-                  setIsSuccessfull(true);
-                })
-                .catch(async (err) => {
-                  setIsFailed(true);
-
-                  await axios.delete(`/content/${contentId}`).catch((err) => {
-                    console.log(err);
-                  });
-                  console.log('error', err);
-                });
-            });
-          })
-          // .then(() => {
-          //   //Empty the form
-          //   setTitle('');
-          //   setSubtitle('');
-          //   setType(1);
-          //   setDescription('');
-          //   setThumbnail('');
-          //   setMainImage('');
-          //   setImageList(['']);
-          //   setVideoUrl('');
-          //   setOrderNo(0);
-          //   setErrors({});
-          // })
-          .catch((err) => {
-            console.log('contentId', contentId);
-
-            setLoading(false);
-            setErrors(err);
-            console.log('err', err);
-            setIsSuccessfull(false);
-            setIsFailed(true);
-          });
-      } else if (type === 2) {
-        await axios
-          .post('/content', contentData)
-          .then((res) => {
-            console.log(res.data);
-            console.log('res', res);
-            console.log('res.data', res.data);
-            setContentId(res.data.content.contentId);
-            return res.data.content.contentId;
-          })
-          .then(async (contentIdReturned) => {
-            //Upload thumbnail
-            await axios
-              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-              .then(() => {
-                console.log('thumbnail uploaded successfully');
-              })
-              .catch(async (err) => {
-                setIsFailed(true);
-
-                await axios.delete(`/content/${contentId}`).catch((err) => {
-                  console.log(err);
-                });
-                console.log('error', err);
-              });
-            return contentIdReturned;
-          })
-          .then(async (contentIdReturned) => {
-            //upload mainImage
-            await axios
-              .post(`/image/${contentIdReturned}/mainImage`, mainImageFormData)
-              .then(() => {
-                console.log('mainImage uploaded successfully');
-                setIsSuccessfull(true);
-              })
-              .catch(async (err) => {
-                setIsFailed(true);
-
-                await axios.delete(`/content/${contentId}`).catch((err) => {
-                  console.log(err);
-                });
-                console.log('error', err);
-              });
-            return contentIdReturned;
-          })
-          // .then(() => {
-          //Empty the form
-          // setTitle('');
-          // setSubtitle('');
-          // setType(1);
-          // setDescription('');
-          // setThumbnail('');
-          // setMainImage('');
-          // setImageList(['']);
-          // setVideoUrl('');
-          // setOrderNo(0);
-          // setErrors({});
-          // setIsSuccessfull(true);
-          // })
-          .catch((err) => {
-            setLoading(false);
-            setErrors(err);
-            console.log('err', err);
-            setIsSuccessfull(false);
-            setIsFailed(true);
-          });
-      } else if (type === 3) {
-        await axios
-          .post('/content', contentData)
-          .then((res) => {
-            console.log(res.data);
-            console.log('res', res);
-            console.log('res.data', res.data);
-            setContentId(res.data.content.contentId);
-            return res.data.content.contentId;
-          })
-          .then(async (contentIdReturned) => {
-            //Upload thumbnail
-            await axios
-              .post(`/image/${contentIdReturned}/thumbnail`, thumbnailFormData)
-              .then(() => {
-                setIsSuccessfull(true);
-                console.log('thumbnail uploaded successfully');
-              })
-              .catch(async (err) => {
-                setIsFailed(true);
-
-                await axios.delete(`/content/${contentId}`).catch((err) => {
-                  console.log(err);
-                });
-                console.log('error', err);
-              });
-            return contentIdReturned;
-          })
-          // .then(() => {
-          //Empty the form
-          // setTitle('');
-          // setSubtitle('');
-          // setType(1);
-          // setDescription('');
-          // setThumbnail('');
-          // setMainImage('');
-          // setImageList(['']);
-          // setVideoUrl('');
-          // setOrderNo(0);
-          // setErrors({});
-          // setIsSuccessfull(true);
-          // })
-          .catch((err) => {
-            setLoading(false);
-            setErrors(err);
-            console.log('err', err);
-            setIsSuccessfull(false);
-            setIsFailed(true);
-          });
-      }
-    } else {
-      //TODO: display that token has expired. Login again
-    }
-  };
-  React.useEffect(() => {
-    console.log('contentData', contentData);
-  }, [imageList, type, contentData, loading]);
 
   const thumbnailFormData = new FormData();
 
@@ -322,15 +108,110 @@ const PostContentData = () => {
   };
 
   const imageListFormData = new FormData();
-  const imageListFormDataArray = [];
 
-  const uploadImageList = (event, index) => {
+  const addImageToImageListFormData = (event, index) => {
     const image = event.target.files[0];
     if (image) {
       imageListFormData.append('image', image, image.name);
-      imageListFormDataArray.push(imageListFormData);
+      setImageListFormDataArray([...imageListFormDataArray, imageListFormData]);
     }
   };
+  const failContentUpload = (err) => {
+    DeleteContentData(contentId);
+    setLoading(false);
+    setErrors(err);
+    console.log('err', err);
+    setIsSuccessfull(false);
+    setIsFailed(true);
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+
+    const postContentData = axios.post('/content', contentData).then((res) => {
+      console.log('res', res);
+      console.log('res.data', res.data);
+      setContentId(res.data.content.contentId);
+      return res.data.content.contentId;
+    });
+
+    if (IsAuthenticated()) {
+      if (type === 1) {
+        postContentData
+          .then(async (contentIdReturned) => {
+            setContentId(contentIdReturned);
+            console.log('contentId', contentId);
+            await setIsThumbnailUploaded(
+              await UploadThumbnail(contentIdReturned, thumbnailFormData),
+            );
+            await setIsMainImageUploaded(
+              await UploadMainImage(contentIdReturned, mainImageFormData),
+            );
+            await setIsImageListUploaded(
+              await UploadImageList(contentIdReturned, imageListFormDataArray),
+            );
+            setIsSuccessfull(
+              isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
+            );
+            setIsFailed(!isSuccessfull);
+          })
+          .catch((err) => {
+            failContentUpload(err);
+          });
+      } else if (type === 2) {
+        postContentData
+          .then(async (contentIdReturned) => {
+            setContentId(contentIdReturned);
+            await setIsThumbnailUploaded(
+              await UploadThumbnail(contentIdReturned, thumbnailFormData),
+            );
+            await setIsMainImageUploaded(
+              await UploadMainImage(contentIdReturned, mainImageFormData),
+            );
+            setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
+            setIsFailed(!isSuccessfull);
+          })
+          .catch((err) => {
+            failContentUpload(err);
+          });
+      } else if (type === 3) {
+        postContentData
+          .then((contentIdReturned) => {
+            setContentId(contentIdReturned);
+            setIsThumbnailUploaded(
+              UploadThumbnail(contentIdReturned, thumbnailFormData),
+            );
+            console.log('isThumbnailUploaded', isThumbnailUploaded);
+            setIsSuccessfull(isThumbnailUploaded);
+            setIsFailed(!isSuccessfull);
+          })
+
+          // .then(() => {
+          //Empty the form
+          // setTitle('');
+          // setSubtitle('');
+          // setType(1);
+          // setDescription('');
+          // setThumbnail('');
+          // setMainImage('');
+          // setImageList(['']);
+          // setVideoUrl('');
+          // setOrderNo(0);
+          // setErrors({});
+          // setIsSuccessfull(true);
+          // })
+          .catch((err) => {
+            failContentUpload(err);
+          });
+      }
+    } else {
+      //TODO: display that token has expired. Login again
+    }
+  };
+  React.useEffect(() => {
+    console.log('contentData', contentData);
+  }, [imageList, type, contentData, loading]);
 
   return (
     <div>
@@ -538,8 +419,12 @@ const PostContentData = () => {
                               type='file'
                               accept='image/*'
                               onChange={(event, index) => {
-                                uploadImageList(event, index);
+                                addImageToImageListFormData(event, index);
                                 console.log('uploadImageList', index);
+                                console.log(
+                                  'imageListFormDataArray',
+                                  imageListFormDataArray,
+                                );
                               }}
                             />
                           </Button>
@@ -628,4 +513,4 @@ const PostContentData = () => {
   );
 };
 
-export default PostContentData;
+export default CreateContent;

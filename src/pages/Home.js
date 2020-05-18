@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ThumbnailCards from './ThumbnailCards';
+import ThumbnailCards from '../components/ThumbnailCards';
 
 class Home extends Component {
   render() {
