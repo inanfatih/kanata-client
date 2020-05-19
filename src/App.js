@@ -21,7 +21,6 @@ import Admin from './admin/Admin';
 import Login from './admin/Login';
 import CreateContent from './admin/CreateContent';
 import EditContent from './admin/EditContent';
-import ContentContextProvider from './contexts/ContentContext';
 
 axios.defaults.baseURL =
   'https://us-central1-kanata-production.cloudfunctions.net/api';
@@ -46,10 +45,8 @@ function App() {
             <Route exact path='/contact' component={Contact} />
             <Route exact path='/edit-content' component={EditContent} />
             <Route exact path='/content/:contentId' component={Content} />
+            <Route exact path='/create-content' component={CreateContent} />
             <Route exact path='/' component={Home} />
-            <ContentContextProvider>
-              <Route exact path='/create-content' component={CreateContent} />
-            </ContentContextProvider>
           </Switch>
         </main>
       </Router>

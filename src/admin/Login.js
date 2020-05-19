@@ -14,6 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 
+import firebase from '../firebase/firebase';
 import { styles } from '../util/theme';
 import '../App.css';
 
@@ -29,6 +30,14 @@ class login extends Component {
   }
 
   handleSubmit = (event) => {
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     this.props.history.push('/admin'); //state i degistirdikten sonra bu path e gitmeyi sagliyoruz
+    //     // } else {
+    //     // ...
+    //   }
+    // });
+
     console.log('handleSubmit', event);
     event.preventDefault();
     this.setState({ loading: true });
@@ -37,6 +46,7 @@ class login extends Component {
       email: this.state.email,
       password: this.state.password,
     };
+
     axios
       .post('/login', userData)
       .then((res) => {
@@ -49,6 +59,12 @@ class login extends Component {
           loading: false,
         });
         this.props.history.push('/admin'); //state i degistirdikten sonra bu path e gitmeyi sagliyoruz
+      })
+      .then(() => {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(this.state.email, this.state.password)
+          .catch((error) => console.log('error.message', error.message));
       })
       .catch((err) => {
         this.setState({

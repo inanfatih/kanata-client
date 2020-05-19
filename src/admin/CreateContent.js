@@ -30,31 +30,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import { styles } from '../util/theme';
 import '../App.css';
-import { ContentContext } from '../contexts/ContentContext';
 import IsAuthenticated from '../util/IsAuthenticated';
 import UploadThumbnail from '../util/UploadThumbnail';
 import UploadMainImage from '../util/UploadMainImage';
 import UploadImageList from '../util/UploadImageList';
 import DeleteContentData from '../util/DeleteContentData';
+
+import firebase from '../firebase/firebase';
+
 const useStyles = makeStyles(styles);
 
 const CreateContent = () => {
   IsAuthenticated();
-
-  // const {
-  //   // description,
-  //   // subtitle,
-  //   // title,
-  //   // type,
-  //   // videoUrl,
-  //   // thumbnail,
-  //   // mainImage,
-  //   // orderNo,
-  //   // imageList,
-  //   root,
-  // } = useContext(ContentContext);
-
-  // console.log('root', root);
 
   const classes = useStyles();
 
@@ -91,11 +78,58 @@ const CreateContent = () => {
 
   const thumbnailFormData = new FormData();
 
+  const imageUploader = (file, fileName, contentIds) => {
+    var storage = firebase.storage();
+
+    var storageRef = storage.ref();
+    var uploadTask = storageRef.child(fileName).put(file);
+
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on(
+      'state_changed',
+      function (snapshot) {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+      },
+      function (error) {
+        // Handle unsuccessful uploads
+        console.log('errorrr', error);
+      },
+      function () {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log('File available at', downloadURL);
+        });
+      },
+    );
+  };
+
   const uploadThumbnail = (event) => {
-    const image = event.target.files[0];
-    if (image) {
-      thumbnailFormData.append('image', image, image.name);
-    }
+    let reader = new FileReader();
+    let file = event.target.files[0];
+
+    reader.onloadend = () => {
+      var blob = new Blob([reader.result], { type: 'image/jpeg' });
+      console.log('reader.result', reader.result);
+      console.log('file.name', file.name);
+      imageUploader(blob, file.name);
+    };
+
+    reader.readAsDataURL(file);
+
+    // const image = event.target.files[0];
+    // if (image) {
+    //   console.log('image', image);
+    //   console.log('image.name', image.name);
+    //   imageUploader(image, image.name);
+    //   // thumbnailFormData.append('image', image, image.name);
+    // }
   };
 
   const mainImageFormData = new FormData();
@@ -130,8 +164,8 @@ const CreateContent = () => {
     setLoading(true);
 
     const postContentData = axios.post('/content', contentData).then((res) => {
-      console.log('res', res);
-      console.log('res.data', res.data);
+      // console.log('res', res);
+      // console.log('res.data', res.data);
       setContentId(res.data.content.contentId);
       return res.data.content.contentId;
     });
@@ -139,18 +173,27 @@ const CreateContent = () => {
     if (IsAuthenticated()) {
       if (type === 1) {
         postContentData
-          .then(async (contentIdReturned) => {
+          .then((contentIdReturned) => {
             setContentId(contentIdReturned);
             console.log('contentId', contentId);
-            await setIsThumbnailUploaded(
-              await UploadThumbnail(contentIdReturned, thumbnailFormData),
+            setIsThumbnailUploaded(
+              UploadThumbnail(contentIdReturned, thumbnailFormData),
             );
-            await setIsMainImageUploaded(
-              await UploadMainImage(contentIdReturned, mainImageFormData),
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
+            setIsMainImageUploaded(
+              UploadMainImage(contentIdReturned, mainImageFormData),
             );
-            await setIsImageListUploaded(
-              await UploadImageList(contentIdReturned, imageListFormDataArray),
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
+            setIsImageListUploaded(
+              UploadImageList(contentIdReturned, imageListFormDataArray),
             );
+            return contentIdReturned;
+          })
+          .then((contentIdReturned) => {
             setIsSuccessfull(
               isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
             );
@@ -177,10 +220,10 @@ const CreateContent = () => {
           });
       } else if (type === 3) {
         postContentData
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
             setContentId(contentIdReturned);
-            setIsThumbnailUploaded(
-              UploadThumbnail(contentIdReturned, thumbnailFormData),
+            await setIsThumbnailUploaded(
+              await UploadThumbnail(contentIdReturned, thumbnailFormData),
             );
             console.log('isThumbnailUploaded', isThumbnailUploaded);
             setIsSuccessfull(isThumbnailUploaded);
@@ -210,7 +253,7 @@ const CreateContent = () => {
     }
   };
   React.useEffect(() => {
-    console.log('contentData', contentData);
+    // console.log('contentData', contentData);
   }, [imageList, type, contentData, loading]);
 
   return (
@@ -430,9 +473,9 @@ const CreateContent = () => {
                           </Button>
                           <Button
                             onClick={() => {
-                              console.log('imageList Before', imageList);
+                              // console.log('imageList Before', imageList);
                               setImageList(imageList.splice(index, 1));
-                              console.log('imageList After', imageList);
+                              // console.log('imageList After', imageList);
                             }}>
                             <RemoveCircleIcon />
                           </Button>
