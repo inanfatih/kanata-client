@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import axios from 'axios';
 
@@ -31,9 +31,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { styles } from '../util/theme';
 import '../App.css';
 import IsAuthenticated from '../util/IsAuthenticated';
-import UploadThumbnail from '../util/UploadThumbnail';
-import UploadMainImage from '../util/UploadMainImage';
-import UploadImageList from '../util/UploadImageList';
+
 import DeleteContentData from '../util/DeleteContentData';
 
 import firebase from '../firebase/firebase';
@@ -50,19 +48,23 @@ const CreateContent = () => {
   const [type, setType] = React.useState(1);
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState({});
-  const [imageList, setImageList] = React.useState(['']);
+  const [imageListInputButtons, setImageListInputButtons] = React.useState([
+    '',
+  ]);
   const [videoUrl, setVideoUrl] = React.useState('');
   const [orderNo, setOrderNo] = React.useState(0);
   const [contentId, setContentId] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [isSuccessfull, setIsSuccessfull] = React.useState(false);
   const [isFailed, setIsFailed] = React.useState(false);
+
+  const [thumbnail, setThumbnail] = React.useState({});
+  const [mainImage, setMainImage] = React.useState({});
+  const [imageList, setImageList] = React.useState([]);
+
   const [isThumbnailUploaded, setIsThumbnailUploaded] = React.useState();
   const [isMainImageUploaded, setIsMainImageUploaded] = React.useState();
   const [isImageListUploaded, setIsImageListUploaded] = React.useState();
-  const [imageListFormDataArray, setImageListFormDataArray] = React.useState(
-    [],
-  );
 
   let contentData = {
     title: title,
@@ -76,80 +78,91 @@ const CreateContent = () => {
     orderNo: orderNo,
   };
 
-  const thumbnailFormData = new FormData();
-
-  const imageUploader = (file, fileName, contentIds) => {
-    var storage = firebase.storage();
-
-    var storageRef = storage.ref();
-    var uploadTask = storageRef.child(fileName).put(file);
-
-    // Register three observers:
-    // 1. 'state_changed' observer, called any time the state changes
-    // 2. Error observer, called on failure
-    // 3. Completion observer, called on successful completion
-    uploadTask.on(
-      'state_changed',
-      function (snapshot) {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-      },
-      function (error) {
-        // Handle unsuccessful uploads
-        console.log('errorrr', error);
-      },
-      function () {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-          console.log('File available at', downloadURL);
-        });
-      },
-    );
-  };
-
-  const uploadThumbnail = (event) => {
+  const imageUploader = (file, uploadType, index, contentIdReturned) => {
     let reader = new FileReader();
-    let file = event.target.files[0];
-
+    // let file = event.target.files[0];
+    let fileName = '';
+    let fileExtension = file.name.split('.')[file.name.split('.').length - 1];
+    if (uploadType === 'imageList') {
+      fileName = 'imageList' + index + '.' + fileExtension;
+    } else {
+      fileName = uploadType + '.' + fileExtension;
+    }
     reader.onloadend = () => {
-      var blob = new Blob([reader.result], { type: 'image/jpeg' });
-      console.log('reader.result', reader.result);
+      var blob = new Blob([reader.result], {
+        type: file.type,
+      });
       console.log('file.name', file.name);
-      imageUploader(blob, file.name);
+      // imageUploader(blob, fileName);
+
+      var storage = firebase.storage();
+
+      var storageRef = storage.ref();
+      var uploadTask = storageRef
+        .child(contentIdReturned + '/' + fileName)
+        .put(blob);
+
+      // Register three observers:
+      // 1. 'state_changed' observer, called any time the state changes
+      // 2. Error observer, called on failure
+      // 3. Completion observer, called on successful completion
+      uploadTask.on(
+        'state_changed',
+        function (snapshot) {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          var progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(
+            contentIdReturned +
+              '/' +
+              fileName +
+              ' Upload is ' +
+              progress +
+              '% done',
+          );
+        },
+        function (error) {
+          // Handle unsuccessful uploads
+          console.log('errorrr', error);
+        },
+        function () {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+            console.log('File available at', downloadURL);
+          });
+        },
+      );
     };
 
     reader.readAsDataURL(file);
-
-    // const image = event.target.files[0];
-    // if (image) {
-    //   console.log('image', image);
-    //   console.log('image.name', image.name);
-    //   imageUploader(image, image.name);
-    //   // thumbnailFormData.append('image', image, image.name);
-    // }
+    return contentIdReturned;
   };
 
-  const mainImageFormData = new FormData();
-
-  const uploadMainImage = (event) => {
+  const uploadThumbnail = async (event) => {
     const image = event.target.files[0];
+
     if (image) {
-      mainImageFormData.append('image', image, image.name);
+      return await setThumbnail({ image });
     }
   };
 
-  const imageListFormData = new FormData();
-
-  const addImageToImageListFormData = (event, index) => {
+  const uploadMainImage = async (event) => {
     const image = event.target.files[0];
+
     if (image) {
-      imageListFormData.append('image', image, image.name);
-      setImageListFormDataArray([...imageListFormDataArray, imageListFormData]);
+      return await setMainImage({ image });
     }
   };
+
+  const uploadImageList = async (event, index) => {
+    const image = event.target.files[0];
+    if (image) {
+      return await setImageList({ ...imageList, index: image });
+    }
+  };
+
   const failContentUpload = (err) => {
     DeleteContentData(contentId);
     setLoading(false);
@@ -164,8 +177,6 @@ const CreateContent = () => {
     setLoading(true);
 
     const postContentData = axios.post('/content', contentData).then((res) => {
-      // console.log('res', res);
-      // console.log('res.data', res.data);
       setContentId(res.data.content.contentId);
       return res.data.content.contentId;
     });
@@ -175,86 +186,164 @@ const CreateContent = () => {
         postContentData
           .then((contentIdReturned) => {
             setContentId(contentIdReturned);
-            console.log('contentId', contentId);
-            setIsThumbnailUploaded(
-              UploadThumbnail(contentIdReturned, thumbnailFormData),
-            );
-            return contentIdReturned;
+            try {
+              setIsThumbnailUploaded(true);
+              return imageUploader(
+                thumbnail,
+                'thumbnail',
+                0,
+                contentIdReturned,
+              );
+            } catch (error) {
+              console.log('error in thumbnail upload', error);
+              return setIsThumbnailUploaded(false);
+            }
           })
           .then((contentIdReturned) => {
-            setIsMainImageUploaded(
-              UploadMainImage(contentIdReturned, mainImageFormData),
-            );
-            return contentIdReturned;
+            setIsMainImageUploaded(true);
+            try {
+              return imageUploader(
+                mainImage,
+                'mainImage',
+                0,
+                contentIdReturned,
+              );
+            } catch (error) {
+              console.log('error in main Image upload', error);
+              return setIsMainImageUploaded(false);
+            }
           })
           .then((contentIdReturned) => {
-            setIsImageListUploaded(
-              UploadImageList(contentIdReturned, imageListFormDataArray),
-            );
+            for (const key in imageList) {
+              if (imageList.hasOwnProperty(key)) {
+                try {
+                  return imageUploader(
+                    imageList[key],
+                    'imageList',
+                    key,
+                    contentIdReturned,
+                  );
+                } catch (error) {
+                  console.log('error in imageList upload', error);
+                  return setIsImageListUploaded(false);
+                }
+              }
+            }
+            setIsImageListUploaded(true);
             return contentIdReturned;
           })
-          .then((contentIdReturned) => {
+          .then(() => {
             setIsSuccessfull(
               isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
             );
             setIsFailed(!isSuccessfull);
           })
           .catch((err) => {
-            failContentUpload(err);
+            setIsSuccessfull(
+              isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
+            );
+            setIsFailed(!isSuccessfull);
+            return failContentUpload(err);
           });
       } else if (type === 2) {
         postContentData
-          .then(async (contentIdReturned) => {
+          .then((contentIdReturned) => {
             setContentId(contentIdReturned);
-            await setIsThumbnailUploaded(
-              await UploadThumbnail(contentIdReturned, thumbnailFormData),
-            );
-            await setIsMainImageUploaded(
-              await UploadMainImage(contentIdReturned, mainImageFormData),
-            );
+            try {
+              setIsThumbnailUploaded(true);
+              return imageUploader(
+                thumbnail,
+                'thumbnail',
+                0,
+                contentIdReturned,
+              );
+            } catch (error) {
+              console.log('error in thumbnail upload', error);
+              return setIsThumbnailUploaded(false);
+            }
+          })
+          .then((contentIdReturned) => {
+            setIsMainImageUploaded(true);
+            try {
+              return imageUploader(
+                mainImage,
+                'mainImage',
+                0,
+                contentIdReturned,
+              );
+            } catch (error) {
+              console.log('error in main Image upload', error);
+              return setIsMainImageUploaded(false);
+            }
+          })
+          .then(() => {
             setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
             setIsFailed(!isSuccessfull);
           })
           .catch((err) => {
-            failContentUpload(err);
+            setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
+            setIsFailed(!isSuccessfull);
+            return failContentUpload(err);
           });
       } else if (type === 3) {
         postContentData
-          .then(async (contentIdReturned) => {
+          .then((contentIdReturned) => {
             setContentId(contentIdReturned);
-            await setIsThumbnailUploaded(
-              await UploadThumbnail(contentIdReturned, thumbnailFormData),
-            );
-            console.log('isThumbnailUploaded', isThumbnailUploaded);
+            try {
+              setIsThumbnailUploaded(true);
+              return imageUploader(
+                thumbnail,
+                'thumbnail',
+                0,
+                contentIdReturned,
+              );
+            } catch (error) {
+              console.log('error in thumbnail upload', error);
+              return setIsThumbnailUploaded(false);
+            }
+          })
+          .then(() => {
             setIsSuccessfull(isThumbnailUploaded);
             setIsFailed(!isSuccessfull);
           })
-
-          // .then(() => {
-          //Empty the form
-          // setTitle('');
-          // setSubtitle('');
-          // setType(1);
-          // setDescription('');
-          // setThumbnail('');
-          // setMainImage('');
-          // setImageList(['']);
-          // setVideoUrl('');
-          // setOrderNo(0);
-          // setErrors({});
-          // setIsSuccessfull(true);
-          // })
           .catch((err) => {
-            failContentUpload(err);
+            setIsSuccessfull(isThumbnailUploaded);
+            setIsFailed(!isSuccessfull);
+            return failContentUpload(err);
           });
+
+        // .then(() => {
+        //Empty the form
+        // setTitle('');
+        // setSubtitle('');
+        // setType(1);
+        // setDescription('');
+        // setThumbnail('');
+        // setMainImage('');
+        // setImageList(['']);
+        // setVideoUrl('');
+        // setOrderNo(0);
+        // setErrors({});
+        // setIsSuccessfull(true);
+        // })
       }
     } else {
       //TODO: display that token has expired. Login again
     }
   };
   React.useEffect(() => {
-    // console.log('contentData', contentData);
-  }, [imageList, type, contentData, loading]);
+    console.log('thumbnail1', thumbnail.event);
+    console.log('imageList', imageList.event);
+    console.log('mainImage', mainImage.event);
+  }, [
+    imageListInputButtons,
+    type,
+    contentData,
+    loading,
+    thumbnail,
+    imageList.event,
+    mainImage.event,
+  ]);
 
   return (
     <div>
@@ -455,27 +544,23 @@ const CreateContent = () => {
                         Upload additional images for Social Media (These will be
                         displayed after the main image)
                       </div>
-                      {imageList.map((item, index) => (
+                      {imageListInputButtons.map((item, index) => (
                         <div style={{ marginBottom: '1%' }} key={index}>
                           <Button variant='contained' component='label'>
                             <input
                               type='file'
                               accept='image/*'
                               onChange={(event, index) => {
-                                addImageToImageListFormData(event, index);
+                                uploadImageList(event, index);
                                 console.log('uploadImageList', index);
-                                console.log(
-                                  'imageListFormDataArray',
-                                  imageListFormDataArray,
-                                );
                               }}
                             />
                           </Button>
                           <Button
                             onClick={() => {
-                              // console.log('imageList Before', imageList);
-                              setImageList(imageList.splice(index, 1));
-                              // console.log('imageList After', imageList);
+                              setImageListInputButtons(['']);
+                              //TODO: Clear imageListArray
+                              // console.log('imageListInputButtons After', imageListInputButtons);
                             }}>
                             <RemoveCircleIcon />
                           </Button>
@@ -484,7 +569,10 @@ const CreateContent = () => {
 
                       <Button
                         onClick={() => {
-                          setImageList([...imageList, '']);
+                          setImageListInputButtons([
+                            ...imageListInputButtons,
+                            '',
+                          ]);
                         }}>
                         Add more images <AddCircleIcon />
                       </Button>
