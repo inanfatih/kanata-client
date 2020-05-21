@@ -3,7 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyDGzbmuSjF9kIwh1YVe93KA2mdNZfYaXqk',
   authDomain: 'kanata-production.firebaseapp.com',
   databaseURL: 'https://kanata-production.firebaseio.com',

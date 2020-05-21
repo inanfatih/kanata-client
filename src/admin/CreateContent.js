@@ -34,7 +34,7 @@ import IsAuthenticated from '../util/IsAuthenticated';
 
 import DeleteContentData from '../util/DeleteContentData';
 
-import firebase from '../firebase/firebase';
+import firebase, { firebaseConfig } from '../firebase/firebase';
 
 const useStyles = makeStyles(styles);
 
@@ -48,9 +48,7 @@ const CreateContent = () => {
   const [type, setType] = React.useState(1);
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState({});
-  const [imageListInputButtons, setImageListInputButtons] = React.useState([
-    '',
-  ]);
+  const [imageListInputButtons, setImageListInputButtons] = React.useState([0]);
   const [videoUrl, setVideoUrl] = React.useState('');
   const [orderNo, setOrderNo] = React.useState(0);
   const [contentId, setContentId] = React.useState('');
@@ -79,87 +77,77 @@ const CreateContent = () => {
   };
 
   const imageUploader = (file, uploadType, index, contentIdReturned) => {
-    let reader = new FileReader();
+    // let reader = new FileReader();
     // let file = event.target.files[0];
     let fileName = '';
     let fileExtension = file.name.split('.')[file.name.split('.').length - 1];
     if (uploadType === 'imageList') {
-      fileName = 'imageList' + index + '.' + fileExtension;
+      fileName = 'imageList' + index;
     } else {
-      fileName = uploadType + '.' + fileExtension;
+      fileName = uploadType;
     }
-    reader.onloadend = () => {
-      var blob = new Blob([reader.result], {
-        type: file.type,
-      });
-      console.log('file.name', file.name);
-      // imageUploader(blob, fileName);
+    // Create a root reference
 
-      var storage = firebase.storage();
+    var storageRef = firebase.storage().ref();
+    console.log(
+      'filepath, filename and extension',
+      `${contentIdReturned}/${fileName}`,
+    );
+    // Create a reference to 'images/mountains.jpg'
+    var imageRef = storageRef.child(
+      `${contentIdReturned}/${fileName}.${fileExtension}`,
+    );
 
-      var storageRef = storage.ref();
-      var uploadTask = storageRef
-        .child(contentIdReturned + '/' + fileName)
-        .put(blob);
+    imageRef.put(file).then((snapshot) => {
+      const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${contentIdReturned}%2F${fileName}.${fileExtension}?alt=media`;
+      console.log('Uploaded a blob or file!', snapshot);
+      console.log('imageUrl', imageUrl);
 
-      // Register three observers:
-      // 1. 'state_changed' observer, called any time the state changes
-      // 2. Error observer, called on failure
-      // 3. Completion observer, called on successful completion
-      uploadTask.on(
-        'state_changed',
-        function (snapshot) {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          var progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(
-            contentIdReturned +
-              '/' +
-              fileName +
-              ' Upload is ' +
-              progress +
-              '% done',
-          );
-        },
-        function (error) {
-          // Handle unsuccessful uploads
-          console.log('errorrr', error);
-        },
-        function () {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-            console.log('File available at', downloadURL);
-          });
-        },
+      postContentLinks(
+        contentIdReturned,
+        uploadType,
+        fileName,
+        fileExtension,
+        index,
       );
-    };
+    });
 
-    reader.readAsDataURL(file);
     return contentIdReturned;
   };
 
-  const uploadThumbnail = async (event) => {
+  const uploadThumbnail = (event) => {
     const image = event.target.files[0];
 
-    if (image) {
-      return await setThumbnail({ image });
+    if (image && (image.type === 'image/png' || image.type === 'image/jpeg')) {
+      return setThumbnail({ image: image });
+    } else {
+      window.alert('Please select images only in jpg, jpeg or png extensions');
+      document.getElementById('thumbnailInput').value = null;
     }
   };
 
-  const uploadMainImage = async (event) => {
+  const uploadMainImage = (event) => {
     const image = event.target.files[0];
 
-    if (image) {
-      return await setMainImage({ image });
+    if (image && (image.type === 'image/png' || image.type === 'image/jpeg')) {
+      return setMainImage({ image: image });
+    } else {
+      window.alert('Please select images only in jpg, jpeg or png extensions');
+      document.getElementById('mainImageInput').value = null;
     }
   };
 
-  const uploadImageList = async (event, index) => {
+  const uploadImageList = (event, index) => {
     const image = event.target.files[0];
     if (image) {
-      return await setImageList({ ...imageList, index: image });
+      setImageList([...imageList, image]);
+    }
+
+    if (image && (image.type === 'image/png' || image.type === 'image/jpeg')) {
+      return setImageList([...imageList, image]);
+    } else {
+      window.alert('Please select images with only jpg, jpeg or png formats');
+      document.getElementById(`imageListInput${index}`).value = null;
     }
   };
 
@@ -170,6 +158,30 @@ const CreateContent = () => {
     console.log('err', err);
     setIsSuccessfull(false);
     setIsFailed(true);
+  };
+
+  // app.post('/image/:contentId/:imageType/:imageFileName/:imageExtension/:index',
+  const postContentLinks = async (
+    contentId,
+    imageType,
+    imageFileName,
+    imageExtension,
+    index,
+  ) => {
+    return await axios
+      .post(
+        `/image/${contentId}/${imageType}/${imageFileName}/${imageExtension}/${index}`,
+      )
+      .then((res) => {
+        console.log('content link for ' + imageType + ' updated', res);
+        return res;
+      })
+      .catch((err) => {
+        console.log(
+          'content link for ' + imageType + ' could not be updated',
+          err,
+        );
+      });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -189,7 +201,7 @@ const CreateContent = () => {
             try {
               setIsThumbnailUploaded(true);
               return imageUploader(
-                thumbnail,
+                thumbnail.image,
                 'thumbnail',
                 0,
                 contentIdReturned,
@@ -203,7 +215,7 @@ const CreateContent = () => {
             setIsMainImageUploaded(true);
             try {
               return imageUploader(
-                mainImage,
+                mainImage.image,
                 'mainImage',
                 0,
                 contentIdReturned,
@@ -218,7 +230,7 @@ const CreateContent = () => {
               if (imageList.hasOwnProperty(key)) {
                 try {
                   return imageUploader(
-                    imageList[key],
+                    imageList[key].image,
                     'imageList',
                     key,
                     contentIdReturned,
@@ -252,7 +264,7 @@ const CreateContent = () => {
             try {
               setIsThumbnailUploaded(true);
               return imageUploader(
-                thumbnail,
+                thumbnail.image,
                 'thumbnail',
                 0,
                 contentIdReturned,
@@ -266,7 +278,7 @@ const CreateContent = () => {
             setIsMainImageUploaded(true);
             try {
               return imageUploader(
-                mainImage,
+                mainImage.image,
                 'mainImage',
                 0,
                 contentIdReturned,
@@ -292,7 +304,7 @@ const CreateContent = () => {
             try {
               setIsThumbnailUploaded(true);
               return imageUploader(
-                thumbnail,
+                thumbnail.image,
                 'thumbnail',
                 0,
                 contentIdReturned,
@@ -332,9 +344,16 @@ const CreateContent = () => {
     }
   };
   React.useEffect(() => {
-    console.log('thumbnail1', thumbnail.event);
-    console.log('imageList', imageList.event);
-    console.log('mainImage', mainImage.event);
+    console.log('thumbnail1', thumbnail);
+    if (thumbnail) {
+      console.log('thumbnail1.image', thumbnail.image);
+    }
+    console.log('imageList', imageList);
+    if (imageList[1]) {
+      console.log('imageList.image', imageList[1].image);
+    }
+    console.log('mainImage', mainImage);
+    if (mainImage) console.log('mainImag.imagee', mainImage.image);
   }, [
     imageListInputButtons,
     type,
@@ -343,6 +362,8 @@ const CreateContent = () => {
     thumbnail,
     imageList.event,
     mainImage.event,
+    imageList,
+    mainImage,
   ]);
 
   return (
@@ -351,7 +372,10 @@ const CreateContent = () => {
         <div className={classes.contactContentBox}>
           <Paper className={classes.contactContent} elevation={10}>
             <Card elevation={5}>
-              <CardContent style={{ justifyContent: 'center' }}>
+              <CardContent
+                style={{
+                  justifyContent: 'center',
+                }}>
                 <form onSubmit={handleSubmit} className={classes.contactForm}>
                   <Typography
                     variant='h4'
@@ -486,13 +510,20 @@ const CreateContent = () => {
                       padding: '2%',
                       color: 'grey',
                     }}>
-                    <div style={{ marginBottom: '1%' }}>
+                    <div
+                      style={{
+                        marginBottom: '1%',
+                      }}>
                       Upload Thumbnail Image to be used in the home page
                     </div>
 
-                    <div style={{ marginBottom: '1%' }}>
+                    <div
+                      style={{
+                        marginBottom: '1%',
+                      }}>
                       <Button variant='contained' component='label'>
                         <input
+                          id='thumbnailInput'
                           type='file'
                           accept='image/*'
                           required
@@ -512,14 +543,21 @@ const CreateContent = () => {
                         padding: '2%',
                         color: 'grey',
                       }}>
-                      <div style={{ marginBottom: '1%' }}>
+                      <div
+                        style={{
+                          marginBottom: '1%',
+                        }}>
                         Upload Main Image (The image to be displayed on the top
                         in the content page) for 2D & 3D or Social Media
                       </div>
 
-                      <div style={{ marginBottom: '1%' }}>
+                      <div
+                        style={{
+                          marginBottom: '1%',
+                        }}>
                         <Button variant='contained' component='label'>
                           <input
+                            id='mainImageInput'
                             type='file'
                             accept='image/*'
                             required
@@ -540,19 +578,26 @@ const CreateContent = () => {
                         padding: '2%',
                         color: 'grey',
                       }}>
-                      <div style={{ marginBottom: '1%' }}>
+                      <div
+                        style={{
+                          marginBottom: '1%',
+                        }}>
                         Upload additional images for Social Media (These will be
                         displayed after the main image)
                       </div>
                       {imageListInputButtons.map((item, index) => (
-                        <div style={{ marginBottom: '1%' }} key={index}>
+                        <div
+                          style={{
+                            marginBottom: '1%',
+                          }}
+                          key={index}>
                           <Button variant='contained' component='label'>
                             <input
+                              id={`imageListInput${index}`}
                               type='file'
                               accept='image/*'
-                              onChange={(event, index) => {
+                              onChange={(event) => {
                                 uploadImageList(event, index);
-                                console.log('uploadImageList', index);
                               }}
                             />
                           </Button>
@@ -584,7 +629,11 @@ const CreateContent = () => {
                     type='submit'
                     variant='contained'
                     color='primary'
-                    style={{ margin: '2%', width: '95%', padding: '1%' }}
+                    style={{
+                      margin: '2%',
+                      width: '95%',
+                      padding: '1%',
+                    }}
                     disabled={!loading && !errors}>
                     Create Content
                     {loading && (
