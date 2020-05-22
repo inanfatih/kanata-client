@@ -60,9 +60,9 @@ const CreateContent = () => {
   const [mainImage, setMainImage] = React.useState({});
   const [imageList, setImageList] = React.useState([]);
 
-  const [isThumbnailUploaded, setIsThumbnailUploaded] = React.useState();
-  const [isMainImageUploaded, setIsMainImageUploaded] = React.useState();
-  const [isImageListUploaded, setIsImageListUploaded] = React.useState();
+  const [isThumbnailUploaded, setIsThumbnailUploaded] = React.useState(false);
+  const [isMainImageUploaded, setIsMainImageUploaded] = React.useState(false);
+  const [isImageListUploaded, setIsImageListUploaded] = React.useState(false);
 
   let contentData = {
     title: title,
@@ -76,7 +76,7 @@ const CreateContent = () => {
     orderNo: orderNo,
   };
 
-  const imageUploader = (file, uploadType, index, contentIdReturned) => {
+  const imageUploader = async (file, uploadType, index, contentIdReturned) => {
     // let reader = new FileReader();
     // let file = event.target.files[0];
     let fileName = '';
@@ -98,7 +98,7 @@ const CreateContent = () => {
       `${contentIdReturned}/${fileName}.${fileExtension}`,
     );
 
-    imageRef.put(file).then((snapshot) => {
+    return await imageRef.put(file).then((snapshot) => {
       const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${contentIdReturned}%2F${fileName}.${fileExtension}?alt=media`;
       console.log('Uploaded a blob or file!', snapshot);
       console.log('imageUrl', imageUrl);
@@ -110,9 +110,8 @@ const CreateContent = () => {
         fileExtension,
         index,
       );
+      return contentIdReturned;
     });
-
-    return contentIdReturned;
   };
 
   const uploadThumbnail = (event) => {
@@ -155,20 +154,20 @@ const CreateContent = () => {
     DeleteContentData(contentId);
     setLoading(false);
     setErrors(err);
-    console.log('err', err);
+    console.log('fail content upload', err);
     setIsSuccessfull(false);
     setIsFailed(true);
   };
 
   // app.post('/image/:contentId/:imageType/:imageFileName/:imageExtension/:index',
-  const postContentLinks = async (
+  const postContentLinks = (
     contentId,
     imageType,
     imageFileName,
     imageExtension,
     index,
   ) => {
-    return await axios
+    return axios
       .post(
         `/image/${contentId}/${imageType}/${imageFileName}/${imageExtension}/${index}`,
       )
@@ -198,8 +197,8 @@ const CreateContent = () => {
         postContentData
           .then((contentIdReturned) => {
             setContentId(contentIdReturned);
+            setIsThumbnailUploaded(true);
             try {
-              setIsThumbnailUploaded(true);
               return imageUploader(
                 thumbnail.image,
                 'thumbnail',
@@ -227,10 +226,13 @@ const CreateContent = () => {
           })
           .then((contentIdReturned) => {
             for (const key in imageList) {
+              console.log('imageList[key]', imageList[key]);
+              console.log('imageList', imageList);
+              console.log('key', key);
               if (imageList.hasOwnProperty(key)) {
                 try {
-                  return imageUploader(
-                    imageList[key].image,
+                  imageUploader(
+                    imageList[key],
                     'imageList',
                     key,
                     contentIdReturned,
@@ -249,20 +251,25 @@ const CreateContent = () => {
               isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
             );
             setIsFailed(!isSuccessfull);
+            setLoading(false);
+            console.log('submit successfull');
           })
           .catch((err) => {
             setIsSuccessfull(
               isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
             );
             setIsFailed(!isSuccessfull);
+            setLoading(false);
+            console.log('submit failed');
+
             return failContentUpload(err);
           });
       } else if (type === 2) {
         postContentData
           .then((contentIdReturned) => {
             setContentId(contentIdReturned);
+            setIsThumbnailUploaded(true);
             try {
-              setIsThumbnailUploaded(true);
               return imageUploader(
                 thumbnail.image,
                 'thumbnail',
@@ -291,19 +298,27 @@ const CreateContent = () => {
           .then(() => {
             setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
             setIsFailed(!isSuccessfull);
+            setLoading(false);
+            console.log('submit successfull');
           })
           .catch((err) => {
             setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
             setIsFailed(!isSuccessfull);
+            setLoading(false);
+            console.log('submit failed');
+
             return failContentUpload(err);
           });
       } else if (type === 3) {
         postContentData
-          .then((contentIdReturned) => {
+          .then(async (contentIdReturned) => {
+            console.log('postcontentdata passed ');
             setContentId(contentIdReturned);
+            setIsThumbnailUploaded(true);
             try {
-              setIsThumbnailUploaded(true);
-              return imageUploader(
+              console.log('at image uploader ');
+
+              return await imageUploader(
                 thumbnail.image,
                 'thumbnail',
                 0,
@@ -315,10 +330,13 @@ const CreateContent = () => {
             }
           })
           .then(() => {
+            console.log('submit successfull');
             setIsSuccessfull(isThumbnailUploaded);
-            setIsFailed(!isSuccessfull);
+            setLoading(false);
           })
           .catch((err) => {
+            console.log('submit failed');
+            setLoading(false);
             setIsSuccessfull(isThumbnailUploaded);
             setIsFailed(!isSuccessfull);
             return failContentUpload(err);
@@ -344,16 +362,24 @@ const CreateContent = () => {
     }
   };
   React.useEffect(() => {
-    console.log('thumbnail1', thumbnail);
-    if (thumbnail) {
-      console.log('thumbnail1.image', thumbnail.image);
-    }
+    // setIsFailed(!isSuccessfull);
+
+    // console.log('thumbnail1', thumbnail);
+    // if (thumbnail) {
+    //   console.log('thumbnail1.image', thumbnail.image);
+    // }
     console.log('imageList', imageList);
     if (imageList[1]) {
       console.log('imageList.image', imageList[1].image);
     }
-    console.log('mainImage', mainImage);
-    if (mainImage) console.log('mainImag.imagee', mainImage.image);
+    // console.log('mainImage', mainImage);
+    // if (mainImage) console.log('mainImag.imagee', mainImage.image);
+    console.log('loading', loading);
+    console.log('isSuccessfull', isSuccessfull);
+    console.log('isFailed', isFailed);
+    console.log('isThumbnailUploaded', isThumbnailUploaded);
+    console.log('isMainImageUploaded', isMainImageUploaded);
+    console.log('isImageListUploaded', isImageListUploaded);
   }, [
     imageListInputButtons,
     type,
@@ -364,6 +390,11 @@ const CreateContent = () => {
     mainImage.event,
     imageList,
     mainImage,
+    isSuccessfull,
+    isFailed,
+    isThumbnailUploaded,
+    isMainImageUploaded,
+    isImageListUploaded,
   ]);
 
   return (
@@ -634,12 +665,12 @@ const CreateContent = () => {
                       width: '95%',
                       padding: '1%',
                     }}
-                    disabled={!loading && !errors}>
+                    disabled={!loading && (isSuccessfull || isFailed)}>
                     Create Content
                     {loading && (
                       <CircularProgress
                         className='classes.progress'
-                        size='30'></CircularProgress>
+                        size='50'></CircularProgress>
                     )}
                   </Button>
                 </form>
@@ -665,7 +696,7 @@ const CreateContent = () => {
               ? 'Creating the content'
               : isFailed
               ? 'Failed'
-              : ' Successful'}
+              : 'Successful'}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id='alert-dialog-slide-description'>

@@ -153,7 +153,7 @@ class login extends Component {
                       variant='contained'
                       color='primary'
                       style={{ margin: '2%', width: '95%', padding: '1%' }}
-                      disabled={loading && !errors}>
+                      disabled={loading}>
                       Login
                       {loading && (
                         <CircularProgress
