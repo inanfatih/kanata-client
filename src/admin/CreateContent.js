@@ -60,10 +60,6 @@ const CreateContent = () => {
   const [mainImage, setMainImage] = React.useState({});
   const [imageList, setImageList] = React.useState([]);
 
-  const [isThumbnailUploaded, setIsThumbnailUploaded] = React.useState(false);
-  const [isMainImageUploaded, setIsMainImageUploaded] = React.useState(false);
-  const [isImageListUploaded, setIsImageListUploaded] = React.useState(false);
-
   let contentData = {
     title: title,
     subtitle: subtitle,
@@ -193,11 +189,10 @@ const CreateContent = () => {
     });
 
     if (IsAuthenticated()) {
-      if (type === 1) {
+      if (type === 2) {
         postContentData
           .then((contentIdReturned) => {
             setContentId(contentIdReturned);
-            setIsThumbnailUploaded(true);
             try {
               return imageUploader(
                 thumbnail.image,
@@ -207,11 +202,10 @@ const CreateContent = () => {
               );
             } catch (error) {
               console.log('error in thumbnail upload', error);
-              return setIsThumbnailUploaded(false);
+              setIsFailed(true);
             }
           })
           .then((contentIdReturned) => {
-            setIsMainImageUploaded(true);
             try {
               return imageUploader(
                 mainImage.image,
@@ -221,54 +215,41 @@ const CreateContent = () => {
               );
             } catch (error) {
               console.log('error in main Image upload', error);
-              return setIsMainImageUploaded(false);
+              return setIsFailed(true);
             }
           })
           .then((contentIdReturned) => {
             for (const key in imageList) {
-              console.log('imageList[key]', imageList[key]);
-              console.log('imageList', imageList);
-              console.log('key', key);
-              if (imageList.hasOwnProperty(key)) {
-                try {
-                  imageUploader(
-                    imageList[key],
-                    'imageList',
-                    key,
-                    contentIdReturned,
-                  );
-                } catch (error) {
-                  console.log('error in imageList upload', error);
-                  return setIsImageListUploaded(false);
-                }
+              try {
+                imageUploader(
+                  imageList[key],
+                  'imageList',
+                  key,
+                  contentIdReturned,
+                );
+              } catch (error) {
+                console.log('error in imageList upload', error);
+                setIsFailed(true);
               }
             }
-            setIsImageListUploaded(true);
             return contentIdReturned;
           })
           .then(() => {
-            setIsSuccessfull(
-              isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
-            );
-            setIsFailed(!isSuccessfull);
+            setIsSuccessfull(!isFailed);
             setLoading(false);
             console.log('submit successfull');
           })
           .catch((err) => {
-            setIsSuccessfull(
-              isThumbnailUploaded && isMainImageUploaded && isImageListUploaded,
-            );
-            setIsFailed(!isSuccessfull);
+            setIsSuccessfull(!isFailed);
             setLoading(false);
             console.log('submit failed');
 
             return failContentUpload(err);
           });
-      } else if (type === 2) {
+      } else if (type === 1) {
         postContentData
           .then((contentIdReturned) => {
             setContentId(contentIdReturned);
-            setIsThumbnailUploaded(true);
             try {
               return imageUploader(
                 thumbnail.image,
@@ -278,11 +259,10 @@ const CreateContent = () => {
               );
             } catch (error) {
               console.log('error in thumbnail upload', error);
-              return setIsThumbnailUploaded(false);
+              setIsFailed(true);
             }
           })
           .then((contentIdReturned) => {
-            setIsMainImageUploaded(true);
             try {
               return imageUploader(
                 mainImage.image,
@@ -292,21 +272,19 @@ const CreateContent = () => {
               );
             } catch (error) {
               console.log('error in main Image upload', error);
-              return setIsMainImageUploaded(false);
+              setIsFailed(true);
             }
           })
           .then(() => {
-            setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
-            setIsFailed(!isSuccessfull);
+            setIsSuccessfull(!isFailed);
+
             setLoading(false);
             console.log('submit successfull');
           })
           .catch((err) => {
-            setIsSuccessfull(isThumbnailUploaded && isMainImageUploaded);
-            setIsFailed(!isSuccessfull);
+            setIsSuccessfull(!isFailed);
             setLoading(false);
             console.log('submit failed');
-
             return failContentUpload(err);
           });
       } else if (type === 3) {
@@ -314,7 +292,6 @@ const CreateContent = () => {
           .then(async (contentIdReturned) => {
             console.log('postcontentdata passed ');
             setContentId(contentIdReturned);
-            setIsThumbnailUploaded(true);
             try {
               console.log('at image uploader ');
 
@@ -326,19 +303,18 @@ const CreateContent = () => {
               );
             } catch (error) {
               console.log('error in thumbnail upload', error);
-              return setIsThumbnailUploaded(false);
+              return setIsFailed(true);
             }
           })
           .then(() => {
             console.log('submit successfull');
-            setIsSuccessfull(isThumbnailUploaded);
+            setIsSuccessfull(!isFailed);
             setLoading(false);
           })
           .catch((err) => {
             console.log('submit failed');
             setLoading(false);
-            setIsSuccessfull(isThumbnailUploaded);
-            setIsFailed(!isSuccessfull);
+            setIsSuccessfull(!isFailed);
             return failContentUpload(err);
           });
 
@@ -362,12 +338,6 @@ const CreateContent = () => {
     }
   };
   React.useEffect(() => {
-    // setIsFailed(!isSuccessfull);
-
-    // console.log('thumbnail1', thumbnail);
-    // if (thumbnail) {
-    //   console.log('thumbnail1.image', thumbnail.image);
-    // }
     console.log('imageList', imageList);
     if (imageList[1]) {
       console.log('imageList.image', imageList[1].image);
@@ -377,9 +347,6 @@ const CreateContent = () => {
     console.log('loading', loading);
     console.log('isSuccessfull', isSuccessfull);
     console.log('isFailed', isFailed);
-    console.log('isThumbnailUploaded', isThumbnailUploaded);
-    console.log('isMainImageUploaded', isMainImageUploaded);
-    console.log('isImageListUploaded', isImageListUploaded);
   }, [
     imageListInputButtons,
     type,
@@ -392,9 +359,6 @@ const CreateContent = () => {
     mainImage,
     isSuccessfull,
     isFailed,
-    isThumbnailUploaded,
-    isMainImageUploaded,
-    isImageListUploaded,
   ]);
 
   return (
@@ -599,7 +563,7 @@ const CreateContent = () => {
                     </div>
                   )}
 
-                  {type === 1 && (
+                  {type === 2 && (
                     <div
                       style={{
                         margin: '3% 2%',
@@ -613,7 +577,7 @@ const CreateContent = () => {
                         style={{
                           marginBottom: '1%',
                         }}>
-                        Upload additional images for Social Media (These will be
+                        Upload additional images for 2D & 3D (These will be
                         displayed after the main image)
                       </div>
                       {imageListInputButtons.map((item, index) => (
