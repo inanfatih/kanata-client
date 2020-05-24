@@ -15,6 +15,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 //Pages
 import { styles } from '../util/theme';
 import '../App.css';
@@ -31,18 +33,40 @@ const useStyles = makeStyles(styles);
 export default function Content(props) {
   const [contentPage, setContent] = React.useState({});
   const [images, setImage] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   const classes = useStyles();
+
+  let loadingMarkup = (
+    <div
+      style={{
+        width: '30%',
+        height: '100vh',
+        margin: 'auto',
+      }}>
+      <CircularProgress
+        size={200}
+        thickness={1}
+        color={'#fff'}
+        style={{ marginTop: '30vh' }}
+      />
+    </div>
+  );
 
   const contentId = props.match.params.contentId;
 
   React.useEffect(() => {
+    setLoading(true);
+
     axios
       .get(`/content/${contentId}`)
       .then((res) => {
         console.log('res.data', res.data);
         setContent(res.data);
         setImage(res.data.imageList);
+      })
+      .then(() => {
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -183,7 +207,9 @@ export default function Content(props) {
     </Grow>
   );
 
-  return contentPage.type === 3
+  return loading
+    ? loadingMarkup
+    : contentPage.type === 3
     ? // Video content
       videoMarkup
     : //Social Media Content
