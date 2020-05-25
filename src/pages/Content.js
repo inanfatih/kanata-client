@@ -8,7 +8,6 @@ import ReactPlayer from 'react-player';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grow from '@material-ui/core/Grow';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -34,7 +33,9 @@ export default function Content(props) {
   const [contentPage, setContent] = React.useState({});
   const [images, setImage] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-
+  const [imageLightBoxImageList, setImageLightBoxImageList] = React.useState(
+    [],
+  );
   const classes = useStyles();
 
   let loadingMarkup = (
@@ -57,13 +58,18 @@ export default function Content(props) {
 
   React.useEffect(() => {
     setLoading(true);
-
     axios
       .get(`/content/${contentId}`)
-      .then((res) => {
-        console.log('res.data', res.data);
+      .then(async (res) => {
         setContent(res.data);
         setImage(res.data.imageList);
+        setImageLightBoxImageList([
+          ...[res.data.mainImage],
+          ...res.data.imageList,
+        ]);
+
+        // const serafetting = [...[res.data.mainImage], ...res.data.imageList];
+        // console.log('serafetting', serafetting);
       })
       .then(() => {
         setLoading(false);
@@ -76,42 +82,36 @@ export default function Content(props) {
   const videoMarkup = (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
-        <Paper className={classes.imageContent} elevation={10}>
-          <Card className={classes.mediaRoot} elevation={5}>
-            <CardActionArea disableTouchRipple>
-              <div className='player-wrapper'>
-                <ReactPlayer
-                  url={contentPage.videoUrl}
-                  width='100%'
-                  height='100%'
-                  className='react-player'
-                />
-              </div>
-              {/* <CardMedia
-                className={classes.cardMedia}
-                title={contentPage.title}
-              /> */}
-              <CardContent>
-                <Typography gutterBottom variant='h3'>
-                  {contentPage.title}
-                </Typography>
-                <Typography gutterBottom variant='h5'>
-                  {contentPage.subtitle}
-                </Typography>
-                <Typography variant='h6' color='textSecondary' component='p'>
-                  {contentPage.description}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Link to='/contact'>
-                <Button size='small' color='primary'>
-                  Learn More
-                </Button>
-              </Link>
-            </CardActions>
-          </Card>
-        </Paper>
+        <Card className={classes.mediaRoot} elevation={5}>
+          <CardActionArea disableTouchRipple>
+            <div className='player-wrapper'>
+              <ReactPlayer
+                url={contentPage.videoUrl}
+                width='100%'
+                height='100%'
+                className='react-player'
+              />
+            </div>
+            <CardContent>
+              <Typography gutterBottom variant='h3'>
+                {contentPage.title}
+              </Typography>
+              <Typography gutterBottom variant='h5'>
+                {contentPage.subtitle}
+              </Typography>
+              <Typography variant='h6' color='textSecondary' component='p'>
+                {contentPage.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            <Link to='/contact'>
+              <Button size='small' color='primary'>
+                Learn More
+              </Button>
+            </Link>
+          </CardActions>
+        </Card>
       </div>
     </Grow>
   );
@@ -119,39 +119,37 @@ export default function Content(props) {
   const socialMediaMarkup = (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
-        <Paper className={classes.imageContent} elevation={10}>
-          <Card className={classes.mediaRoot} elevation={5}>
-            <CardActionArea
-              style={{
-                cursor: 'default',
-              }}>
-              <CardMedia
-                component='img'
-                className={classes.cardMedia}
-                image={contentPage.mainImage}
-                title={contentPage.title}
-              />
-              <CardContent>
-                <Typography gutterBottom variant='h3'>
-                  {contentPage.title}
-                </Typography>
-                <Typography gutterBottom variant='h5'>
-                  {contentPage.subtitle}
-                </Typography>
-                <Typography variant='h6' color='textSecondary' component='p'>
-                  {contentPage.description}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-            <CardActions>
-              <Link to='/contact'>
-                <Button size='small' color='primary'>
-                  Learn More
-                </Button>
-              </Link>
-            </CardActions>
-          </Card>
-        </Paper>
+        <Card className={classes.mediaRoot} elevation={5}>
+          <CardActionArea
+            style={{
+              cursor: 'default',
+            }}>
+            <CardMedia
+              component='img'
+              className={classes.cardMedia}
+              image={contentPage.mainImage}
+              title={contentPage.title}
+            />
+            <CardContent>
+              <Typography gutterBottom variant='h3'>
+                {contentPage.title}
+              </Typography>
+              <Typography gutterBottom variant='h5'>
+                {contentPage.subtitle}
+              </Typography>
+              <Typography variant='h6' color='textSecondary' component='p'>
+                {contentPage.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            <Link to='/contact'>
+              <Button size='small' color='primary'>
+                Learn More
+              </Button>
+            </Link>
+          </CardActions>
+        </Card>
       </div>
     </Grow>
   );
@@ -159,50 +157,46 @@ export default function Content(props) {
   const twoDthreeDMarkup = (
     <Grow in timeout={500}>
       <div className={classes.imageContentBox}>
-        <Paper className={classes.imageContent} elevation={10}>
-          <Card className={classes.mediaRoot} elevation={5}>
-            <CardActionArea
-              style={{
-                cursor: 'default',
-              }}>
-              <CardMedia
-                component='img'
-                className={classes.cardMedia}
-                image={contentPage.mainImage}
-                title={contentPage.title}
-              />
-              <CardContent>
-                <Typography gutterBottom variant='h3'>
-                  {contentPage.title}
-                </Typography>
-                <Typography gutterBottom variant='h5'>
-                  {contentPage.subtitle}
-                </Typography>
-                <Typography variant='h6' color='textSecondary' component='p'>
-                  {contentPage.description}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Link to='/contact'>
-                  <Button size='small' color='primary'>
-                    Learn More
-                  </Button>
-                </Link>
-              </CardActions>
-            </CardActionArea>
+        <Card className={classes.mediaRoot} elevation={5}>
+          <CardActionArea
+            style={{
+              cursor: 'default',
+            }}>
+            <CardMedia
+              component='img'
+              className={classes.cardMedia}
+              image={contentPage.mainImage}
+              title={contentPage.title}
+            />
+            <CardContent>
+              <Typography gutterBottom variant='h3'>
+                {contentPage.title}
+              </Typography>
+              <Typography gutterBottom variant='h5'>
+                {contentPage.subtitle}
+              </Typography>
+              <Typography variant='h6' color='textSecondary' component='p'>
+                {contentPage.description}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Link to='/contact'>
+                <Button size='small' color='primary'>
+                  Learn More
+                </Button>
+              </Link>
+            </CardActions>
+          </CardActionArea>
+        </Card>
+        {images.map((imageLink, index) => (
+          <Card key={index} className={classes.mediaRoot} elevation={5}>
+            <CardMedia
+              component='img'
+              className={classes.cardMedia}
+              image={imageLink}
+            />
           </Card>
-          {images.map((imageLink, index) => (
-            <Card key={index} className={classes.mediaRoot} elevation={5}>
-              <CardContent>
-                <CardMedia
-                  component='img'
-                  className={classes.cardMedia}
-                  image={imageLink}
-                />
-              </CardContent>
-            </Card>
-          ))}
-        </Paper>
+        ))}
       </div>
     </Grow>
   );

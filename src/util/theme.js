@@ -113,7 +113,7 @@ export const styles = (theme) => ({
       background: '#DE2548',
     },
     [theme.breakpoints.up('sm')]: {
-      padding: '2%',
+      padding: '4%',
       background: '#DE2548',
     },
   },

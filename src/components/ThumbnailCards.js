@@ -83,11 +83,11 @@ const ThumbnailCards = (props) => {
 
   let gridWidth = 100;
   if (width >= 1920) {
-    gridWidth = (width - drawerWidth) / 4;
+    gridWidth = (width - drawerWidth) / 6;
   } else if (width >= 1280) {
-    gridWidth = (width - drawerWidth) / 3;
+    gridWidth = (width - drawerWidth) / 4;
   } else if (width >= 960) {
-    gridWidth = (width - drawerWidth) / 2;
+    gridWidth = (width - drawerWidth) / 3;
   } else if (width >= 600) {
     gridWidth = width - drawerWidth;
   } else gridWidth = width;
@@ -115,9 +115,10 @@ const ThumbnailCards = (props) => {
           <Grid
             key={contentItem.contentId}
             item
-            md={6}
-            lg={4}
-            xl={3}
+            sm={6}
+            md={4}
+            lg={3}
+            xl={2}
             component={Grow}
             in
             timeout={200 * index}
